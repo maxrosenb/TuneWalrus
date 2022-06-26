@@ -41,35 +41,43 @@ try {
     if (message.content.startsWith(`${PREFIX}play`)) {
       await execute(message, serverQueue, queue);
       return;
-    } else if (message.content.startsWith(`${PREFIX}skip`)) {
+    }
+    if (message.content.startsWith(`${PREFIX}skip`)) {
       skip(message, serverQueue);
       return;
-    } else if (message.content.startsWith(`${PREFIX}assertdominance`)) {
-      execute(message, serverQueue, queue, true);
-      return;
-    } else if (message.content.startsWith(`${PREFIX}stop`)) {
+    }
+    if (message.content.startsWith(`${PREFIX}assertdominance`)) {
+      if (serverQueue.songs.length) {
+        execute(message, serverQueue, queue, true);
+        return;
+      } else {
+        execute(message, serverQueue, queue, false);
+      }
+    }
+    if (message.content.startsWith(`${PREFIX}stop`)) {
       stop(message, serverQueue);
       return;
-    } else if (message.content.startsWith(`${PREFIX}emptyqueue`)) {
-      // empties the serverQueue, if it exists
+    }
+    if (message.content.startsWith(`${PREFIX}emptyqueue`)) {
       if (serverQueue) {
         serverQueue.songs = [];
       }
       const textChannel = message.channel as Discord.TextChannel;
       textChannel.send(`Queue Emptied.`);
       return;
-    } else if (message.content.startsWith(`${PREFIX}god`)) {
+    }
+    if (message.content.startsWith(`${PREFIX}god`)) {
       // get text chanel from message
       const textChannel = message.channel as Discord.TextChannel;
       textChannel.send(
         `TuneWalrus is love. TuneWalrus is life. Accept TuneWalrus into yours and live happily for the rest of your days.`
       );
       return;
-    } else if (message.content.startsWith(`${PREFIX}ဟိုင်း`)) {
-      serverQueue.textChannel.send(`မင်္ဂလာပါ`);
-    } else {
-      message.channel.send("You need to enter a valid command!");
     }
+    if (message.content.startsWith(`${PREFIX}ဟိုင်း`)) {
+      serverQueue.textChannel.send(`မင်္ဂလာပါ`);
+    }
+    message.channel.send("You need to enter a valid command!");
   });
 
   client.login(TOKEN);

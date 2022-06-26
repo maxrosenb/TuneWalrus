@@ -4,7 +4,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "./node_modules/.bin/pm2 start src/server.ts --transpile-only --watch",
+    "start": "./node_modules/.bin/pm2 start src/server.ts --watch",
     "postinstall": "$(yarn bin)/pm2 install typescript"
   },
   "keywords": [],
