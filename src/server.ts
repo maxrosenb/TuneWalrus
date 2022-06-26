@@ -1,5 +1,5 @@
 import Discord from "discord.js";
-import { PREFIX, TOKEN } from "../config";
+import { PREFIX, TOKEN } from "./config";
 import { stop, skip, execute } from "./utils";
 
 if (!TOKEN) {
