@@ -50,6 +50,14 @@ try {
     } else if (message.content.startsWith(`${PREFIX}stop`)) {
       stop(message, serverQueue);
       return;
+    } else if (message.content.startsWith(`${PREFIX}emptyqueue`)) {
+      // empties the serverQueue, if it exists
+      if (serverQueue) {
+        serverQueue.songs = [];
+      }
+      const textChannel = message.channel as Discord.TextChannel;
+      textChannel.send(`Queue Emptied.`);
+      return;
     } else if (message.content.startsWith(`${PREFIX}god`)) {
       // get text chanel from message
       const textChannel = message.channel as Discord.TextChannel;
