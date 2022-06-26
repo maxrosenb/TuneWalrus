@@ -47,6 +47,11 @@ try {
     } else if (message.content.startsWith(`${PREFIX}stop`)) {
       stop(message, serverQueue);
       return;
+    } else if (message.content.startsWith(`${PREFIX}god`)) {
+      serverQueue.textChannel.send(
+        `TuneWalrus is love. TuneWalrus is life. Accept TuneWalrus into yours and live happily for the rest of your days.`
+      );
+      return;
     } else {
       message.channel.send("You need to enter a valid command!");
     }
