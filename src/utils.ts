@@ -93,7 +93,7 @@ export const stop = (message: Discord.Message, serverQueue: ServerQueue) => {
     return message.channel.send("There is no song that I could stop!");
 
   serverQueue.songs = [];
-  serverQueue.connection?.dispatcher.end();
+  serverQueue.connection?.dispatcher?.end();
 };
 
 export const play = (
