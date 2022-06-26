@@ -1,7 +1,7 @@
 import Discord from "discord.js";
 import { PREFIX, TOKEN } from "../config";
 import { stop, skip, execute } from "./utils";
-import { Queue } from "./types";
+import { QueueConstruct } from "./types";
 
 if (!TOKEN) {
   console.log("No token found. Please set TOKEN in config.ts");
@@ -12,7 +12,7 @@ const client = new Discord.Client();
 
 // map of servers to queues
 
-const queue: Queue = {};
+const queue = new Map();
 
 client.once("ready", () => {
   console.log("Ready!");
@@ -31,15 +31,15 @@ client.on("message", async (message) => {
   if (!message.content.startsWith(PREFIX)) return;
   if (!message.guild) return;
 
-  const serverQueue = queue[message.guild.id];
+  const serverQueue = queue.get(message.guild.id);
 
-  if (message.content.startsWith(`${PREFIX}play`) && serverQueue) {
+  if (message.content.startsWith(`${PREFIX}play`)) {
     await execute(message, serverQueue, queue);
     return;
-  } else if (message.content.startsWith(`${PREFIX}skip`) && serverQueue) {
+  } else if (message.content.startsWith(`${PREFIX}skip`)) {
     skip(message, serverQueue);
     return;
-  } else if (message.content.startsWith(`${PREFIX}stop`) && serverQueue) {
+  } else if (message.content.startsWith(`${PREFIX}stop`)) {
     stop(message, serverQueue);
     return;
   } else {

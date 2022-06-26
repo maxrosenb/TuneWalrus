@@ -2,12 +2,12 @@ import Discord from "discord.js";
 import ytdl from "ytdl-core";
 // @ts-ignore
 import youtubesearchapi from "youtube-search-api";
-import { Song, QueueConstruct, ServerQueue, Queue } from "./types";
+import { Song, QueueConstruct, ServerQueue } from "./types";
 
 export const execute = async (
   message: Discord.Message,
   serverQueue: QueueConstruct,
-  queue: Queue
+  queue
 ) => {
   if (!message.client.user) return;
   if (!message.guild) return;
@@ -64,7 +64,7 @@ export const execute = async (
       play(message.guild, queueConstruct.songs[0], queue);
     } catch (err) {
       console.log(err);
-      delete queue[message.guild?.id];
+      queue.delete(message.guild?.id);
       //@ts-ignore
       return message.channel.send(err);
     }
@@ -96,19 +96,15 @@ export const stop = (message: Discord.Message, serverQueue: ServerQueue) => {
   serverQueue.connection?.dispatcher.end();
 };
 
-export const play = (guild: Discord.Guild, song: Song, queue: Queue) => {
-  const serverQueue = queue[guild.id];
+export const play = (guild: Discord.Guild, song: Song, queue) => {
+  const serverQueue = queue.get(guild.id);
   if (!song) {
     serverQueue.voiceChannel.leave();
     delete queue[guild.id];
     return;
   }
 
-  if (!serverQueue.connection) {
-    return;
-  }
-
-  const dispatcher = serverQueue?.connection
+  const dispatcher = serverQueue.connection
     .play(ytdl(song.url))
     .on("finish", () => {
       serverQueue.songs.shift();
