@@ -1,7 +1,6 @@
 import Discord from "discord.js";
 import { PREFIX, TOKEN } from "../config";
 import { stop, skip, execute } from "./utils";
-import { QueueConstruct } from "./types";
 
 if (!TOKEN) {
   console.log("No token found. Please set TOKEN in config.ts");
@@ -11,7 +10,6 @@ if (!TOKEN) {
 const client = new Discord.Client();
 
 // map of servers to queues
-
 const queue = new Map();
 
 client.once("ready", () => {

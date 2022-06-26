@@ -10,7 +10,6 @@ export const execute = async (
   queue
 ) => {
   if (!message.client.user) return;
-  if (!message.guild) return;
   const args = message.content.split(" ");
   const songTitle = args.slice(1).join(" ");
 
@@ -53,7 +52,8 @@ export const execute = async (
       volume: 5,
       playing: true,
     };
-    queue[message.guild.id] = queueConstruct;
+
+    queue.set(message.guild?.id, queueConstruct);
 
     queueConstruct.songs.push(song);
 
@@ -100,7 +100,7 @@ export const play = (guild: Discord.Guild, song: Song, queue) => {
   const serverQueue = queue.get(guild.id);
   if (!song) {
     serverQueue.voiceChannel.leave();
-    delete queue[guild.id];
+    queue.delete(guild.id);
     return;
   }
 
