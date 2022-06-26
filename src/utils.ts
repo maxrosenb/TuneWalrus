@@ -7,7 +7,8 @@ import { Song, QueueConstruct, ServerQueue } from "./types";
 export const execute = async (
   message: Discord.Message,
   serverQueue: QueueConstruct,
-  queue: Map<any, any>
+  queue: Map<any, any>,
+  skipCurrent: boolean = false
 ) => {
   if (!message.client.user) return;
   const args = message.content.split(" ");
@@ -34,9 +35,17 @@ export const execute = async (
     1
   );
 
-  const songInfo = await ytdl.getInfo(
-    `https://www.youtube.com/watch?v=${searchResults.items[0].id}`
-  );
+  let linkToSearch;
+
+  console.log(`titleToSearch: ${titleToSearch}`);
+
+  if (titleToSearch.includes("https") || titleToSearch.includes("youtube")) {
+    linkToSearch = titleToSearch;
+  } else {
+    linkToSearch = `https://www.youtube.com/watch?v=${searchResults.items[0].id}`;
+  }
+
+  const songInfo = await ytdl.getInfo(linkToSearch);
 
   const song: Song = {
     title: songInfo.videoDetails.title,
@@ -69,6 +78,13 @@ export const execute = async (
       return message.channel.send(err);
     }
   } else {
+    if (skipCurrent) {
+      console.log("Skipping!");
+      serverQueue.songs.splice(1, 0, song);
+      skip(message, serverQueue);
+
+      return;
+    }
     serverQueue.songs.push(song);
     return message.channel.send(`${song.title} has been added to the queue!`);
   }

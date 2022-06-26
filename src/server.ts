@@ -44,14 +44,21 @@ try {
     } else if (message.content.startsWith(`${PREFIX}skip`)) {
       skip(message, serverQueue);
       return;
+    } else if (message.content.startsWith(`${PREFIX}assertdominance`)) {
+      execute(message, serverQueue, queue, true);
+      return;
     } else if (message.content.startsWith(`${PREFIX}stop`)) {
       stop(message, serverQueue);
       return;
     } else if (message.content.startsWith(`${PREFIX}god`)) {
-      serverQueue.textChannel.send(
+      // get text chanel from message
+      const textChannel = message.channel as Discord.TextChannel;
+      textChannel.send(
         `TuneWalrus is love. TuneWalrus is life. Accept TuneWalrus into yours and live happily for the rest of your days.`
       );
       return;
+    } else if (message.content.startsWith(`${PREFIX}ဟိုင်း`)) {
+      serverQueue.textChannel.send(`မင်္ဂလာပါ`);
     } else {
       message.channel.send("You need to enter a valid command!");
     }
