@@ -7,7 +7,7 @@ import { Song, QueueConstruct, ServerQueue } from "./types";
 export const execute = async (
   message: Discord.Message,
   serverQueue: QueueConstruct,
-  queue
+  queue: Map<any, any>
 ) => {
   if (!message.client.user) return;
   const args = message.content.split(" ");
@@ -96,7 +96,11 @@ export const stop = (message: Discord.Message, serverQueue: ServerQueue) => {
   serverQueue.connection?.dispatcher.end();
 };
 
-export const play = (guild: Discord.Guild, song: Song, queue) => {
+export const play = (
+  guild: Discord.Guild,
+  song: Song,
+  queue: { get: (arg0: string) => any; delete: (arg0: string) => void }
+) => {
   const serverQueue = queue.get(guild.id);
   if (!song) {
     serverQueue.voiceChannel.leave();
@@ -110,7 +114,7 @@ export const play = (guild: Discord.Guild, song: Song, queue) => {
       serverQueue.songs.shift();
       play(guild, serverQueue.songs[0], queue);
     })
-    .on("error", (error) => console.error(error));
+    .on("error", (error: any) => console.error(error));
   dispatcher.setVolumeLogarithmic(serverQueue.volume / 5);
   serverQueue.textChannel.send(`Start playing: **${song.title}**`);
 };
