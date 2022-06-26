@@ -20,3 +20,5 @@ export type ServerQueue = {
   songs: Song[];
   connection: Discord.VoiceConnection | null;
 };
+
+export type YtdlResults = { items: { id: string }[] };

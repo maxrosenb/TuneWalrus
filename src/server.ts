@@ -1,6 +1,9 @@
 import Discord from "discord.js";
 import { PREFIX, TOKEN } from "./config";
-import { stop, skip, execute } from "./utils";
+import { QueueConstruct } from "./types";
+import { play } from "./actions/play";
+import { stop } from "./actions/stop";
+import { skip } from "./actions/skip";
 
 try {
   if (!TOKEN) {
@@ -17,7 +20,7 @@ try {
   });
 
   // map of servers to queues
-  const queue = new Map();
+  const queue = new Map<string, QueueConstruct>();
 
   client.once("ready", () => {
     console.log("Ready!");
@@ -39,22 +42,31 @@ try {
     const serverQueue = queue.get(message.guild.id);
 
     if (message.content.startsWith(`${PREFIX}play`)) {
-      await execute(message, serverQueue, queue);
+      await play(message, serverQueue, queue);
       return;
     }
     if (message.content.startsWith(`${PREFIX}skip`)) {
+      if (!serverQueue) {
+        return;
+      }
       skip(message, serverQueue);
       return;
     }
     if (message.content.startsWith(`${PREFIX}assertdominance`)) {
+      if (!serverQueue) {
+        return;
+      }
       if (serverQueue.songs.length) {
-        execute(message, serverQueue, queue, true);
+        play(message, serverQueue, queue, true);
         return;
       } else {
-        execute(message, serverQueue, queue, false);
+        play(message, serverQueue, queue, false);
       }
     }
     if (message.content.startsWith(`${PREFIX}stop`)) {
+      if (!serverQueue) {
+        return;
+      }
       stop(message, serverQueue);
       return;
     }
@@ -75,6 +87,9 @@ try {
       return;
     }
     if (message.content.startsWith(`${PREFIX}ဟိုင်း`)) {
+      if (!serverQueue) {
+        return;
+      }
       serverQueue.textChannel.send(`မင်္ဂလာပါ`);
     }
     message.channel.send("You need to enter a valid command!");
