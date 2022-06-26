@@ -2,12 +2,12 @@
 
 ## Commands
 
-- Play (song title)
-  - Searches the song title on youtube and plays the first result
-- Skip
+- `Play <song title>`
+  - Searches the song title on youtube and adds the first result to the queue
+- `Skip`
   - Skips Song
-- Stop
-  - Stops playing
+- `Stop`
+  - Stops play and deletes queue
 
 ## Installation
 
