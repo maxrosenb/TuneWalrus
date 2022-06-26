@@ -1,11 +1,13 @@
 import Discord from "discord.js";
 
+export type Queue = Record<string, QueueConstruct>;
+
 export type Song = {
   title: string;
   url: string;
 };
 
-export type QueueItem = {
+export type QueueConstruct = {
   textChannel: Discord.TextChannel | Discord.DMChannel | Discord.NewsChannel;
   voiceChannel: Discord.VoiceChannel;
   connection: Discord.VoiceConnection | null;
@@ -16,4 +18,5 @@ export type QueueItem = {
 
 export type ServerQueue = {
   songs: Song[];
+  connection: Discord.VoiceConnection | null;
 };
