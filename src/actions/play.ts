@@ -62,16 +62,13 @@ export const play = async (
     queue.set(message.guild?.id, queueConstruct);
     playThroughDiscord(message.guild, queueConstruct.songs[0], queue);
     return;
+  } else {
+    if (assertDominance) {
+      serverQueue.songs.splice(1, 0, song);
+      skip(message, serverQueue);
+      return;
+    }
+    serverQueue.songs.push(song);
+    return message.channel.send(`${song.title} has been added to the queue!`);
   }
-  console.log(err);
-  queue.delete(message.guild?.id);
-  return;
-
-  if (assertDominance) {
-    serverQueue.songs.splice(1, 0, song);
-    skip(message, serverQueue);
-    return;
-  }
-  serverQueue.songs.push(song);
-  return message.channel.send(`${song.title} has been added to the queue!`);
 };
