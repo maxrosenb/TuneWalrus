@@ -3,6 +3,8 @@ import ytdl from "ytdl-core";
 import { Song, ServerInfo, YtdlResults } from "../types";
 import { playThroughDiscord } from "../utils/utils";
 import { skip } from "./skip";
+import { joinVoiceChannel } from "@discordjs/voice";
+
 const youtubesearchapi = require("youtube-search-api");
 
 export const play = async (
@@ -20,18 +22,6 @@ export const play = async (
     return;
 
   const songInput: string = message.content.split(" ").slice(1).join(" ");
-  const voiceChannel: Discord.VoiceChannel = message.member?.voice.channel;
-
-  if (
-    !voiceChannel.permissionsFor(message.client.user) ||
-    !voiceChannel.permissionsFor(message.client.user)?.has("CONNECT") ||
-    !voiceChannel.permissionsFor(message.client.user)?.has("SPEAK")
-  ) {
-    message.channel.send(
-      "I need the permissions to join and speak in your voice channel!"
-    );
-    return;
-  }
 
   let linkToDownload;
   if (songInput.includes("https")) {
@@ -54,11 +44,16 @@ export const play = async (
   };
 
   if (!serverInfo) {
+    const connection = joinVoiceChannel({
+      channelId: message.member.voice.channel.id,
+      guildId: message.guild.id,
+      adapterCreator: message.guild.voiceAdapterCreator,
+      selfDeaf: false,
+    });
     // If we've never seen this server before, add it to the Map
     const serverConstruct: ServerInfo = {
       textChannel: message.channel,
-      voiceChannel: voiceChannel,
-      connection: await voiceChannel.join(),
+      connection: connection,
       songs: [song],
       volume: 5,
     };
@@ -74,6 +69,7 @@ export const play = async (
   }
 
   serverInfo.songs.push(song);
+
   message.channel.send(`${song.title} has been added to the queue!`);
   return;
 };

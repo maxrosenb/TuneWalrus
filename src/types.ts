@@ -1,4 +1,5 @@
 import Discord from "discord.js";
+import { VoiceConnection } from "@discordjs/voice";
 
 export type Song = {
   title: string;
@@ -7,9 +8,14 @@ export type Song = {
 };
 
 export type ServerInfo = {
-  textChannel: Discord.TextChannel | Discord.DMChannel | Discord.NewsChannel;
-  voiceChannel: Discord.VoiceChannel;
-  connection: Discord.VoiceConnection;
+  textChannel:
+    | Discord.DMChannel
+    | Discord.PartialDMChannel
+    | Discord.NewsChannel
+    | Discord.TextChannel
+    | Discord.ThreadChannel
+    | Discord.VoiceChannel;
+  connection: VoiceConnection;
   songs: Song[];
   volume: number;
 };

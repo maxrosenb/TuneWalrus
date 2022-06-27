@@ -11,6 +11,7 @@ import { assertDominance } from "./actions/assertDominance";
 import { god } from "./actions/god";
 import { help } from "./actions/help";
 import { hello } from "./actions/hello";
+import { playPlaylist } from "./actions/playPlaylist";
 try {
   if (!TOKEN) {
     console.log("No token found. Please set TOKEN in config.ts");
@@ -22,6 +23,7 @@ try {
     intents: [
       Discord.Intents.FLAGS.GUILDS,
       Discord.Intents.FLAGS.GUILD_MESSAGES,
+      Discord.Intents.FLAGS.GUILD_VOICE_STATES,
     ],
   });
 
@@ -44,6 +46,11 @@ try {
     // PLAY COMMAND
     if (message.content.startsWith(`${PREFIX}play`)) {
       return await play(message, serverInfo, queue);
+    }
+
+    // PLAY PLAYLIST COMMAND
+    if (message.content.startsWith(`${PREFIX}plist`)) {
+      return await playPlaylist(message, serverInfo, queue, true);
     }
 
     // SKIP COMMAND
