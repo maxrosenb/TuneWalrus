@@ -11,6 +11,7 @@ export const reset = async (
   message: Discord.Message,
   serverInfo: ServerInfo | undefined
 ): Promise<void> => {
+  console.log("resetting");
   if (
     !message.client.user ||
     !message.guild ||
