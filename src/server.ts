@@ -12,6 +12,7 @@ import { god } from "./actions/god";
 import { help } from "./actions/help";
 import { hello } from "./actions/hello";
 import { playPlaylist } from "./actions/playPlaylist";
+import { reset } from "./actions/reset";
 try {
   if (!TOKEN) {
     console.log("No token found. Please set TOKEN in config.ts");
@@ -97,6 +98,11 @@ try {
     // HELLO COMMAND
     if (message.content.startsWith(`${PREFIX}ဟိုင်း`)) {
       return hello(message);
+    }
+
+    // RESET COMMAND
+    if (message.content.startsWith(`${PREFIX}reset`)) {
+      return reset(message, serverInfo);
     }
 
     message.channel.send("You need to enter a valid command!");
