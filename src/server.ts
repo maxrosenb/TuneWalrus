@@ -35,16 +35,22 @@ try {
   });
 
   client.on("message", async (message) => {
-    if (message.author.bot) return;
-    if (!message.content.startsWith(PREFIX)) return;
-    if (!message.guild) return;
+    if (
+      message.author.bot ||
+      !message.content.startsWith(PREFIX) ||
+      !message.guild
+    )
+      return;
 
     const serverQueue = queue.get(message.guild.id);
 
+    // PLAY COMMAND
     if (message.content.startsWith(`${PREFIX}play`)) {
       await play(message, serverQueue, queue);
       return;
     }
+
+    // SKIP COMMAND
     if (message.content.startsWith(`${PREFIX}skip`)) {
       if (!serverQueue) {
         return;
@@ -52,6 +58,8 @@ try {
       skip(message, serverQueue);
       return;
     }
+
+    // ASSERT DOMAIN COMMAND
     if (message.content.startsWith(`${PREFIX}assertdominance`)) {
       if (!serverQueue) {
         return;
@@ -63,6 +71,8 @@ try {
         play(message, serverQueue, queue, false);
       }
     }
+
+    // STOP COMMAND
     if (message.content.startsWith(`${PREFIX}stop`)) {
       if (!serverQueue) {
         return;
@@ -70,6 +80,8 @@ try {
       stop(message, serverQueue);
       return;
     }
+
+    // EMPTY QUEUE COMMAND
     if (message.content.startsWith(`${PREFIX}emptyqueue`)) {
       if (serverQueue) {
         serverQueue.songs = [];
@@ -78,6 +90,8 @@ try {
       textChannel.send(`Queue Emptied.`);
       return;
     }
+
+    // GOD COMMAND
     if (message.content.startsWith(`${PREFIX}god`)) {
       // get text chanel from message
       const textChannel = message.channel as Discord.TextChannel;
@@ -86,6 +100,23 @@ try {
       );
       return;
     }
+
+    // LIST QUEUE COMMAND
+    if (message.content.startsWith(`${PREFIX}listqueue`)) {
+      if (!serverQueue) {
+        return;
+      }
+      const textChannel = message.channel as Discord.TextChannel;
+      textChannel.send(
+        `${serverQueue.songs
+          .map(
+            (song, index) => `${index + 1}. ${song.title} - ${song.userAddedBy}`
+          )
+          .join("\n")}`
+      );
+      return;
+    }
+
     if (message.content.startsWith(`${PREFIX}ဟိုင်း`)) {
       if (!serverQueue) {
         return;

@@ -6,13 +6,12 @@ export const playThroughDiscord = (
   guild: Discord.Guild,
   song: Song,
   queue: { get: (arg0: string) => any; delete: (arg0: string) => void }
-) => {
+): void => {
   const serverQueue = queue.get(guild.id);
 
   if (!song) {
     serverQueue.voiceChannel.leave();
-    queue.delete(guild.id);
-    return;
+    return queue.delete(guild.id);
   }
   try {
     const dispatcher = serverQueue.connection

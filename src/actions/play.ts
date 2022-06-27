@@ -10,7 +10,7 @@ export const play = async (
   serverQueue: QueueConstruct | undefined,
   queue: Map<string, QueueConstruct>,
   assertDominance: boolean = false
-) => {
+): Promise<void> => {
   if (
     !message.client.user ||
     !message.guild ||
@@ -27,9 +27,10 @@ export const play = async (
     !voiceChannel.permissionsFor(message.client.user)?.has("CONNECT") ||
     !voiceChannel.permissionsFor(message.client.user)?.has("SPEAK")
   ) {
-    return message.channel.send(
+    message.channel.send(
       "I need the permissions to join and speak in your voice channel!"
     );
+    return;
   }
 
   const linkToDownload = songInput.includes("https")
@@ -45,6 +46,7 @@ export const play = async (
   const song: Song = {
     title: songInfo.videoDetails.title,
     url: songInfo.videoDetails.video_url,
+    userAddedBy: message.author.username,
   };
 
   if (!serverQueue) {
@@ -62,13 +64,17 @@ export const play = async (
     queue.set(message.guild?.id, queueConstruct);
     playThroughDiscord(message.guild, queueConstruct.songs[0], queue);
     return;
-  } else {
-    if (assertDominance) {
-      serverQueue.songs.splice(1, 0, song);
-      skip(message, serverQueue);
-      return;
-    }
-    serverQueue.songs.push(song);
-    return message.channel.send(`${song.title} has been added to the queue!`);
   }
+
+  // otherwise just play the song, asserting dominance if needed
+
+  if (assertDominance) {
+    serverQueue.songs.splice(1, 0, song);
+    skip(message, serverQueue);
+    return;
+  }
+
+  serverQueue.songs.push(song);
+  message.channel.send(`${song.title} has been added to the queue!`);
+  return;
 };

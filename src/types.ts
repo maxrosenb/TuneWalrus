@@ -5,6 +5,7 @@ export type Queue = Record<string, QueueConstruct>;
 export type Song = {
   title: string;
   url: string;
+  userAddedBy: string;
 };
 
 export type QueueConstruct = {
