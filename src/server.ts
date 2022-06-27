@@ -102,7 +102,7 @@ try {
 
     // RESET COMMAND
     if (message.content.startsWith(`${PREFIX}reset`)) {
-      return reset(message, serverInfo);
+      return reset(message, serverInfo, queue);
     }
 
     message.channel.send("You need to enter a valid command!");

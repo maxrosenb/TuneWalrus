@@ -9,7 +9,8 @@ const youtubesearchapi = require("youtube-search-api");
 
 export const reset = async (
   message: Discord.Message,
-  serverInfo: ServerInfo | undefined
+  serverInfo: ServerInfo | undefined,
+  queue: Map<string, ServerInfo>
 ): Promise<void> => {
   console.log("resetting");
   if (
@@ -24,10 +25,19 @@ export const reset = async (
 
   serverInfo.connection.disconnect();
 
-  serverInfo.connection = joinVoiceChannel({
+  const connection = joinVoiceChannel({
     channelId: message.member.voice.channel.id,
     guildId: message.guild.id,
     adapterCreator: message.guild.voiceAdapterCreator,
     selfDeaf: false,
   });
+
+  const serverConstruct: ServerInfo = {
+    textChannel: message.channel,
+    connection: connection,
+    songs: [],
+    volume: 5,
+  };
+  queue.delete(message.guild.id);
+  queue.set(message.guild.id, serverConstruct);
 };
