@@ -22,7 +22,10 @@ export const playUrl = async (
   const someEmoji = message.guild?.emojis?.cache.find(
     (emoji) => emoji.name === "2434pepebusiness"
   );
-  message.channel.send(`${someEmoji}`);
+  if (someEmoji) {
+    message.channel.send(`${someEmoji}`);
+  }
+
   if (
     !message.client.user ||
     !message.guild ||

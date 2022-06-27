@@ -15,9 +15,15 @@ export const reset = async (
     (emoji) => emoji.name === "6757_Sadge"
   );
 
-  message.channel.send(
-    `Resetting... TuneWalrus is sorry to have failed you ` + `${someEmoji}`
-  );
+  if (someEmoji) {
+    message.channel.send(
+      `Resetting... TuneWalrus is sorry to have failed you ` + `${someEmoji}`
+    );
+  } else {
+    message.channel.send(
+      `Resetting... TuneWalrus is sorry to have failed you `
+    );
+  }
   if (
     !message.client.user ||
     !message.guild ||
