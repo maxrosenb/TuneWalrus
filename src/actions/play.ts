@@ -33,13 +33,15 @@ export const play = async (
     return;
   }
 
+  const searchResults: YtdlResults = await youtubesearchapi.GetListByKeyword(
+    songInput,
+    false,
+    1
+  );
+
   const linkToDownload = songInput.includes("https")
     ? songInput
-    : `https://www.youtube.com/watch?v=${await youtubesearchapi.GetListByKeyword(
-        songInput,
-        false,
-        1
-      ).items[0].id}`;
+    : `https://www.youtube.com/watch?v=${searchResults.items[0].id}`;
 
   const songInfo: ytdl.videoInfo = await ytdl.getInfo(linkToDownload);
 
