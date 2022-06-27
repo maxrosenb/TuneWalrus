@@ -33,15 +33,17 @@ export const play = async (
     return;
   }
 
-  const searchResults: YtdlResults = await youtubesearchapi.GetListByKeyword(
-    songInput,
-    false,
-    1
-  );
-
-  const linkToDownload = songInput.includes("https")
-    ? songInput
-    : `https://www.youtube.com/watch?v=${searchResults.items[0].id}`;
+  let linkToDownload;
+  if (songInput.includes("https")) {
+    linkToDownload = songInput;
+  } else {
+    const searchResults: YtdlResults = await youtubesearchapi.GetListByKeyword(
+      songInput,
+      false,
+      1
+    );
+    linkToDownload = `https://www.youtube.com/watch?v=${searchResults.items[0].id}`;
+  }
 
   const songInfo: ytdl.videoInfo = await ytdl.getInfo(linkToDownload);
 
@@ -72,8 +74,7 @@ export const play = async (
 
   if (assertDominance) {
     serverQueue.songs.splice(1, 0, song);
-    skip(message, serverQueue);
-    return;
+    return skip(message, serverQueue);
   }
 
   serverQueue.songs.push(song);

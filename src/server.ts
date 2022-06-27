@@ -117,6 +117,40 @@ try {
       return;
     }
 
+    // SET VOLUME COMMAND
+    if (message.content.startsWith(`${PREFIX}setvolume`)) {
+      if (!serverQueue) {
+        return;
+      }
+
+      const [, volume] = message.content.split(" ");
+      // make sure volume exists is a number between 0 and 10
+      if (
+        !volume ||
+        isNaN(Number(volume)) ||
+        Number(volume) < 0 ||
+        Number(volume) > 10
+      ) {
+        message.channel.send(`Volume must be a number between 0 and 10.`);
+        return;
+      }
+      serverQueue.volume = parseInt(volume);
+
+      message.channel.send(`Volume set to ${volume}`);
+      return;
+    }
+
+    // HELP COMMAND
+    if (message.content.startsWith(`${PREFIX}help`)) {
+      const textChannel = message.channel as Discord.TextChannel;
+      textChannel.send(
+        `${PREFIX}play - play a song\n${PREFIX}skip - skip the current song\n${PREFIX}stop - stop the current song\n${PREFIX}emptyqueue - empty the queue\n${PREFIX}setvolume - set the volume\n${PREFIX}listqueue - list the queue\n${PREFIX}assertdominance - play the current song again\n${PREFIX}god - say TuneWalrus is love. TuneWalrus is life. Accept TuneWalrus into yours and live happily for the rest of your days.`
+      );
+      return;
+    }
+
+    //
+
     if (message.content.startsWith(`${PREFIX}ဟိုင်း`)) {
       if (!serverQueue) {
         return;
