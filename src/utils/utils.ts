@@ -2,10 +2,12 @@ import Discord from "discord.js";
 import { ServerInfo, Song } from "../types";
 import ytdl from "ytdl-core";
 const {
-  joinVoiceChannel,
   createAudioPlayer,
   createAudioResource,
+  AudioPlayerStatus,
 } = require("@discordjs/voice");
+
+export const player = createAudioPlayer();
 
 export const playThroughDiscord = (
   guild: Discord.Guild,
@@ -23,17 +25,16 @@ export const playThroughDiscord = (
     return;
   }
 
-  const player = createAudioPlayer();
   const resource = createAudioResource(ytdl(song.url));
 
   try {
     player.play(resource);
+
     serverInfo.connection.subscribe(player);
-    player.on("finish", () => {
+    player.on(AudioPlayerStatus.Idle, () => {
       serverInfo.songs.shift();
       playThroughDiscord(guild, serverInfo.songs[0], queue);
     });
-    player.on("error", (error: any) => console.error(error));
   } catch (err) {
     console.log(err);
   }

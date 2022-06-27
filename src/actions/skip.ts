@@ -1,6 +1,6 @@
 import Discord from "discord.js";
 import { ServerInfo } from "../types";
-
+import { player } from "../utils/utils";
 export const skip = (
   message: Discord.Message,
   serverInfo: ServerInfo | undefined
@@ -18,5 +18,5 @@ export const skip = (
     message.channel.send("There is no song that I could skip!");
     return;
   }
-  serverInfo?.connection?.dispatcher.end();
+  player.stop();
 };

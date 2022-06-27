@@ -1,5 +1,7 @@
 import Discord from "discord.js";
 import { ServerInfo } from "../types";
+import { player } from "../utils/utils";
+
 export const stop = (
   message: Discord.Message,
   serverInfo: ServerInfo | undefined
@@ -20,5 +22,5 @@ export const stop = (
   }
 
   serverInfo.songs = [];
-  serverInfo.connection?.dispatcher?.end();
+  player.stop();
 };
