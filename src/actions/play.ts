@@ -5,6 +5,7 @@ import { playThroughDiscord } from "../utils/utils";
 import { skip } from "./skip";
 import { joinVoiceChannel } from "@discordjs/voice";
 import { togglePause } from "./pause";
+import { redisClient } from "../server";
 const youtubesearchapi = require("youtube-search-api");
 
 export const play = async (
@@ -40,7 +41,18 @@ export const play = async (
     linkToDownload = `https://www.youtube.com/watch?v=${searchResults.items[0].id}`;
   }
 
-  const songInfo: ytdl.videoInfo = await ytdl.getInfo(linkToDownload);
+  let songInfo: ytdl.videoInfo;
+  try {
+    const data = await redisClient.get(linkToDownload);
+    if (data) {
+      songInfo = JSON.parse(data);
+    }
+  } catch (err) {
+    console.log(err);
+  }
+
+  songInfo = await ytdl.getInfo(linkToDownload);
+  redisClient.set(linkToDownload, JSON.stringify(songInfo));
 
   const song: Song = {
     title: songInfo.videoDetails.title,

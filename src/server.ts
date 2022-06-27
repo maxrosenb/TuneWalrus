@@ -16,6 +16,21 @@ import { reset } from "./actions/reset";
 import { currentlyPlaying } from "./actions/currentPlaying";
 import { togglePause } from "./actions/pause";
 import { playUrl } from "./actions/playUrl";
+import redis from "redis";
+import { createClient } from "redis";
+
+export const redisClient = createClient();
+
+redisClient.on("error", (err: any) => {
+  console.log("Error " + err);
+});
+
+const connectRedis = async () => {
+  await redisClient.connect();
+};
+
+connectRedis();
+
 try {
   if (!TOKEN) {
     console.log("No token found. Please set TOKEN in config.ts");
