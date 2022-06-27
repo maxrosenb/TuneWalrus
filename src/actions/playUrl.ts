@@ -7,6 +7,10 @@ import { joinVoiceChannel } from "@discordjs/voice";
 import { togglePause } from "./pause";
 const youtubesearchapi = require("youtube-search-api");
 
+const boingSound: ytdl.videoInfo = await ytdl.getInfo(
+  "https://www.youtube.com/watch?v=d7vfbyFl5kc" // BOING sound
+);
+
 export const playUrl = async (
   message: Discord.Message,
   serverInfo: ServerInfo | undefined,
@@ -34,9 +38,15 @@ export const playUrl = async (
   )
     return;
 
-  const songInfo: ytdl.videoInfo = await ytdl.getInfo(
-    url // BOING sound
-  );
+  let songInfo: ytdl.videoInfo;
+
+  if (url === "https://www.youtube.com/watch?v=d7vfbyFl5kc") {
+    songInfo = boingSound;
+  } else {
+    songInfo = await ytdl.getInfo(
+      url // BOING sound
+    );
+  }
 
   const song: Song = {
     title: songInfo.videoDetails.title,
