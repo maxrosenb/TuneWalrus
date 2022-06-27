@@ -15,6 +15,7 @@ import { playPlaylist } from "./actions/playPlaylist";
 import { reset } from "./actions/reset";
 import { currentlyPlaying } from "./actions/currentPlaying";
 import { togglePause } from "./actions/pause";
+import { playUrl } from "./actions/playUrl";
 try {
   if (!TOKEN) {
     console.log("No token found. Please set TOKEN in config.ts");
@@ -119,6 +120,49 @@ try {
     // PAUSE COMMAND
     if (message.content.startsWith(`${PREFIX}pause`)) {
       return togglePause(serverInfo, message);
+    }
+
+    // PLAYBOING COMMAND
+    if (message.content.startsWith(`${PREFIX}boing`)) {
+      return playUrl(
+        message,
+        serverInfo,
+        queue,
+        "https://www.youtube.com/watch?v=d7vfbyFl5kc"
+      );
+    }
+
+    // GROCERY COMMAND
+    if (message.content.startsWith(`${PREFIX}grocery`)) {
+      return playUrl(
+        message,
+        serverInfo,
+        queue,
+        "https://www.youtube.com/watch?v=GTsBU3RtF2c&t=766s"
+      );
+    }
+
+    // SCOOBY COMMAND
+    if (
+      message.content.startsWith(`${PREFIX}scoob`) ||
+      message.content.startsWith(`${PREFIX}scooby`)
+    ) {
+      return playUrl(
+        message,
+        serverInfo,
+        queue,
+        "https://www.youtube.com/watch?v=xW6UWCUMhNE"
+      );
+    }
+
+    // PART COMMAND
+    if (message.content.startsWith(`${PREFIX}party`)) {
+      return playUrl(
+        message,
+        serverInfo,
+        queue,
+        "https://www.youtube.com/watch?v=N4Db0oYKXvw"
+      );
     }
 
     message.channel.send("You need to enter a valid command!");
