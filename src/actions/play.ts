@@ -24,8 +24,8 @@ export const play = async (
 
   if (
     !voiceChannel.permissionsFor(message.client.user) ||
-    !voiceChannel.permissionsFor(message.client.user) ||
-    !voiceChannel.permissionsFor(message.client.user)
+    !voiceChannel.permissionsFor(message.client.user)?.has("CONNECT") ||
+    !voiceChannel.permissionsFor(message.client.user)?.has("SPEAK")
   ) {
     return message.channel.send(
       "I need the permissions to join and speak in your voice channel!"
