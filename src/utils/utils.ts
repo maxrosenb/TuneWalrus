@@ -33,6 +33,9 @@ export const playThroughDiscord = (
     serverInfo.connection.subscribe(player);
     player.on(AudioPlayerStatus.Idle, () => {
       serverInfo.songs.shift();
+      if (serverInfo.songs.length === 0) {
+        serverInfo.connection.disconnect();
+      }
       playThroughDiscord(guild, serverInfo.songs[0], queue);
     });
   } catch (err) {

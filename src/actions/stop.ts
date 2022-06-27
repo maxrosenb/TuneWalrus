@@ -23,4 +23,5 @@ export const stop = (
 
   serverInfo.songs = [];
   player.stop();
+  serverInfo.connection.disconnect();
 };
