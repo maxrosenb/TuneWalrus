@@ -16,7 +16,6 @@ import { reset } from "./actions/reset";
 import { currentlyPlaying } from "./actions/currentPlaying";
 import { togglePause } from "./actions/pause";
 import { playUrl } from "./actions/playUrl";
-import redis from "redis";
 import { createClient } from "redis";
 
 export const redisClient = createClient();
