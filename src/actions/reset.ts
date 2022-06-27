@@ -21,7 +21,7 @@ export const reset = async (
   )
     return;
 
-  const newConnection = serverInfo?.connection;
+  serverInfo.connection.disconnect();
 
   serverInfo.connection = joinVoiceChannel({
     channelId: message.member.voice.channel.id,
