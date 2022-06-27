@@ -1,10 +1,16 @@
 import Discord from "discord.js";
 import { PREFIX, TOKEN } from "./config";
-import { QueueConstruct } from "./types";
+import { ServerInfo } from "./types";
 import { play } from "./actions/play";
 import { stop } from "./actions/stop";
 import { skip } from "./actions/skip";
-
+import { emptyQueue } from "./actions/emptyQueue";
+import { setVolume } from "./actions/setVolume";
+import { listQueue } from "./actions/listQueue";
+import { assertDominance } from "./actions/assertDominance";
+import { god } from "./actions/god";
+import { help } from "./actions/help";
+import { hello } from "./actions/hello";
 try {
   if (!TOKEN) {
     console.log("No token found. Please set TOKEN in config.ts");
@@ -19,8 +25,7 @@ try {
     ],
   });
 
-  // map of servers to queues
-  const queue = new Map<string, QueueConstruct>();
+  const queue = new Map<string, ServerInfo>();
 
   client.once("ready", () => {
     console.log("Ready!");
@@ -42,120 +47,57 @@ try {
     )
       return;
 
-    const serverQueue = queue.get(message.guild.id);
+    const serverInfo: ServerInfo | undefined = queue.get(message.guild.id);
 
     // PLAY COMMAND
     if (message.content.startsWith(`${PREFIX}play`)) {
-      await play(message, serverQueue, queue);
-      return;
+      return await play(message, serverInfo, queue);
     }
 
     // SKIP COMMAND
     if (message.content.startsWith(`${PREFIX}skip`)) {
-      if (!serverQueue) {
-        return;
-      }
-      skip(message, serverQueue);
-      return;
+      return skip(message, serverInfo);
     }
 
     // ASSERT DOMINANCE COMMAND
     if (message.content.startsWith(`${PREFIX}assertdominance`)) {
-      if (!serverQueue) {
-        return;
-      }
-      if (serverQueue.songs.length) {
-        play(message, serverQueue, queue, true);
-        return;
-      } else {
-        play(message, serverQueue, queue, false);
-      }
+      return assertDominance(serverInfo, message, queue);
     }
 
     // STOP COMMAND
     if (message.content.startsWith(`${PREFIX}stop`)) {
-      if (!serverQueue) {
-        return;
-      }
-      stop(message, serverQueue);
+      stop(message, serverInfo);
       return;
     }
 
     // EMPTY QUEUE COMMAND
     if (message.content.startsWith(`${PREFIX}emptyqueue`)) {
-      if (serverQueue) {
-        serverQueue.songs = [];
-      }
-      const textChannel = message.channel as Discord.TextChannel;
-      textChannel.send(`Queue Emptied.`);
-      return;
+      return emptyQueue(serverInfo, message);
     }
 
     // GOD COMMAND
     if (message.content.startsWith(`${PREFIX}god`)) {
-      // get text chanel from message
-      const textChannel = message.channel as Discord.TextChannel;
-      textChannel.send(
-        `TuneWalrus is love. TuneWalrus is life. Accept TuneWalrus into yours and live happily for the rest of your days.`
-      );
-      return;
+      return god(message);
     }
 
     // LIST QUEUE COMMAND
     if (message.content.startsWith(`${PREFIX}listqueue`)) {
-      if (!serverQueue) {
-        return;
-      }
-      const textChannel = message.channel as Discord.TextChannel;
-      textChannel.send(
-        `${serverQueue.songs
-          .map(
-            (song, index) => `${index + 1}. ${song.title} - ${song.userAddedBy}`
-          )
-          .join("\n")}`
-      );
-      return;
+      return listQueue(serverInfo, message);
     }
 
     // SET VOLUME COMMAND
     if (message.content.startsWith(`${PREFIX}setvolume`)) {
-      if (!serverQueue) {
-        return;
-      }
-
-      const [, volume] = message.content.split(" ");
-      // make sure volume exists is a number between 0 and 10
-      if (
-        !volume ||
-        isNaN(Number(volume)) ||
-        Number(volume) < 0 ||
-        Number(volume) > 10
-      ) {
-        message.channel.send(`Volume must be a number between 0 and 10.`);
-        return;
-      }
-      serverQueue.volume = parseInt(volume);
-
-      message.channel.send(`Volume set to ${volume}`);
-      return;
+      return setVolume(serverInfo, message);
     }
 
     // HELP COMMAND
     if (message.content.startsWith(`${PREFIX}help`)) {
-      const textChannel = message.channel as Discord.TextChannel;
-      textChannel.send(
-        "`!play` - play a song\n`!skip` - skip the current song\n`!stop` - stop the current song\n`!emptyqueue` - empty the queue\n`!setvolume` - set the volume\n`!listqueue` - list the queue\n`!assertdominance` - insert song to top of queue and skip current song"
-      );
-      return;
+      return help(message);
     }
 
-    //
-
+    // HELLO COMMAND
     if (message.content.startsWith(`${PREFIX}ဟိုင်း`)) {
-      if (!serverQueue) {
-        return;
-      }
-      serverQueue.textChannel.send(`မင်္ဂလာပါ`);
+      return hello(message);
     }
     message.channel.send("You need to enter a valid command!");
   });

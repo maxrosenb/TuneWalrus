@@ -1,14 +1,14 @@
 import Discord from "discord.js";
 import ytdl from "ytdl-core";
-import { Song, QueueConstruct, ServerQueue, YtdlResults } from "../types";
+import { Song, ServerInfo, YtdlResults } from "../types";
 import { playThroughDiscord } from "../utils/utils";
 import { skip } from "./skip";
 const youtubesearchapi = require("youtube-search-api");
 
 export const play = async (
   message: Discord.Message,
-  serverQueue: QueueConstruct | undefined,
-  queue: Map<string, QueueConstruct>,
+  serverInfo: ServerInfo | undefined,
+  queue: Map<string, ServerInfo>,
   assertDominance: boolean = false
 ): Promise<void> => {
   if (
@@ -53,10 +53,10 @@ export const play = async (
     userAddedBy: message.author.username,
   };
 
-  if (!serverQueue) {
+  if (!serverInfo) {
     // If we've never seen this server before, add it to the Map
 
-    const queueConstruct: QueueConstruct = {
+    const serverConstruct: ServerInfo = {
       textChannel: message.channel,
       voiceChannel: voiceChannel,
       connection: await voiceChannel.join(),
@@ -65,19 +65,19 @@ export const play = async (
       playing: true,
     };
 
-    queue.set(message.guild?.id, queueConstruct);
-    playThroughDiscord(message.guild, queueConstruct.songs[0], queue);
+    queue.set(message.guild?.id, serverConstruct);
+    playThroughDiscord(message.guild, serverConstruct.songs[0], queue);
     return;
   }
 
   // otherwise just play the song, asserting dominance if needed
 
   if (assertDominance) {
-    serverQueue.songs.splice(1, 0, song);
-    return skip(message, serverQueue);
+    serverInfo.songs.splice(1, 0, song);
+    return skip(message, serverInfo);
   }
 
-  serverQueue.songs.push(song);
+  serverInfo.songs.push(song);
   message.channel.send(`${song.title} has been added to the queue!`);
   return;
 };

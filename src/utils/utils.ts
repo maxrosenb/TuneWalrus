@@ -7,23 +7,23 @@ export const playThroughDiscord = (
   song: Song,
   queue: { get: (arg0: string) => any; delete: (arg0: string) => void }
 ): void => {
-  const serverQueue = queue.get(guild.id);
+  const serverInfo = queue.get(guild.id);
 
   if (!song) {
-    serverQueue.voiceChannel.leave();
+    serverInfo.voiceChannel.leave();
     return queue.delete(guild.id);
   }
   try {
-    const dispatcher = serverQueue.connection
+    const dispatcher = serverInfo.connection
       .play(ytdl(song.url))
       .on("finish", () => {
-        serverQueue.songs.shift();
-        playThroughDiscord(guild, serverQueue.songs[0], queue);
+        serverInfo.songs.shift();
+        playThroughDiscord(guild, serverInfo.songs[0], queue);
       })
       .on("error", (error: any) => console.error(error));
-    dispatcher.setVolumeLogarithmic(serverQueue.volume / 5);
+    dispatcher.setVolumeLogarithmic(serverInfo.volume / 5);
   } catch (err) {
     console.log(err);
   }
-  serverQueue.textChannel.send(`Now playing: **${song.title}**`);
+  serverInfo.textChannel.send(`Now playing: **${song.title}**`);
 };

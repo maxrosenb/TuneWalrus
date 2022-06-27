@@ -1,9 +1,12 @@
 import Discord from "discord.js";
-import { ServerQueue } from "../types";
+import { ServerInfo } from "../types";
 export const stop = (
   message: Discord.Message,
-  serverQueue: ServerQueue
+  serverInfo: ServerInfo | undefined
 ): void => {
+  if (!serverInfo) {
+    return;
+  }
   if (!message.member?.voice.channel) {
     message.channel.send(
       "You have to be in a voice channel to stop the music!"
@@ -11,11 +14,11 @@ export const stop = (
     return;
   }
 
-  if (!serverQueue) {
+  if (!serverInfo) {
     message.channel.send("There is no song that I could stop!");
     return;
   }
 
-  serverQueue.songs = [];
-  serverQueue.connection?.dispatcher?.end();
+  serverInfo.songs = [];
+  serverInfo.connection?.dispatcher?.end();
 };

@@ -1,19 +1,22 @@
 import Discord from "discord.js";
-import { ServerQueue } from "../types";
+import { ServerInfo } from "../types";
 
 export const skip = (
   message: Discord.Message,
-  serverQueue: ServerQueue
+  serverInfo: ServerInfo | undefined
 ): void => {
+  if (!serverInfo) {
+    return;
+  }
   if (!message.member?.voice.channel) {
     message.channel.send(
       "You have to be in a voice channel to stop the music!"
     );
     return;
   }
-  if (!serverQueue) {
+  if (!serverInfo) {
     message.channel.send("There is no song that I could skip!");
     return;
   }
-  serverQueue?.connection?.dispatcher.end();
+  serverInfo?.connection?.dispatcher.end();
 };
