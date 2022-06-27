@@ -1,6 +1,7 @@
 import { ServerInfo } from "../types";
 import Discord from "discord.js";
 import { play } from "./play";
+
 export const assertDominance = (
   serverInfo: ServerInfo | undefined,
   message: Discord.Message,

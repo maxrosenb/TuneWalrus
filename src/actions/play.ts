@@ -55,22 +55,18 @@ export const play = async (
 
   if (!serverInfo) {
     // If we've never seen this server before, add it to the Map
-
     const serverConstruct: ServerInfo = {
       textChannel: message.channel,
       voiceChannel: voiceChannel,
       connection: await voiceChannel.join(),
       songs: [song],
       volume: 5,
-      playing: true,
     };
 
     queue.set(message.guild?.id, serverConstruct);
     playThroughDiscord(message.guild, serverConstruct.songs[0], queue);
     return;
   }
-
-  // otherwise just play the song, asserting dominance if needed
 
   if (assertDominance) {
     serverInfo.songs.splice(1, 0, song);
