@@ -70,6 +70,10 @@ export const play = async (
   }
 
   if (assertDominance) {
+    const someEmoji = message.guild?.emojis?.cache.find(
+      (emoji) => emoji.name === "2434pepebusiness"
+    );
+    message.channel.send("**ASSERTING DOMINANCE** " + `${someEmoji}`);
     serverInfo.songs.splice(1, 0, song);
     return skip(message, serverInfo);
   }

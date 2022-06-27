@@ -6,10 +6,18 @@ const youtubesearchapi = require("youtube-search-api");
 export const reset = async (
   message: Discord.Message,
   serverInfo: ServerInfo | undefined,
-  queue: Map<string, ServerInfo>
+  queue: Map<string, ServerInfo>,
+  client: Discord.Client
 ): Promise<void> => {
   console.log("resetting");
-  message.channel.send("Resetting... hopefully this unfucks it");
+
+  const someEmoji: Discord.GuildEmoji | undefined = client.emojis.cache.find(
+    (emoji) => emoji.name === "6757_Sadge"
+  );
+
+  message.channel.send(
+    `Resetting... TuneWalrus is sorry to have failed you ` + `${someEmoji}`
+  );
   if (
     !message.client.user ||
     !message.guild ||

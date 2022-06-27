@@ -21,7 +21,7 @@ try {
     process.exit(1);
   }
 
-  const client = new Discord.Client({
+  const client: Discord.Client = new Discord.Client({
     // @ts-ignore
     intents: [
       Discord.Intents.FLAGS.GUILDS,
@@ -108,7 +108,7 @@ try {
 
     // RESET COMMAND
     if (message.content.startsWith(`${PREFIX}reset`)) {
-      return reset(message, serverInfo, queue);
+      return reset(message, serverInfo, queue, client);
     }
 
     // CURRENTLY PLAYING COMMAND
