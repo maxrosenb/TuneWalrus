@@ -14,6 +14,7 @@ import { hello } from "./actions/hello";
 import { playPlaylist } from "./actions/playPlaylist";
 import { reset } from "./actions/reset";
 import { currentlyPlaying } from "./actions/currentPlaying";
+import { togglePause } from "./actions/pause";
 try {
   if (!TOKEN) {
     console.log("No token found. Please set TOKEN in config.ts");
@@ -82,7 +83,11 @@ try {
     }
 
     // LIST QUEUE COMMAND
-    if (message.content.startsWith(`${PREFIX}listqueue`)) {
+    if (
+      message.content.startsWith(`${PREFIX}listqueue`) ||
+      message.content.startsWith(`${PREFIX}queue`) ||
+      message.content.startsWith(`${PREFIX}list`)
+    ) {
       return listQueue(serverInfo, message);
     }
 
@@ -109,6 +114,11 @@ try {
     // CURRENTLY PLAYING COMMAND
     if (message.content.startsWith(`${PREFIX}current`)) {
       return currentlyPlaying(serverInfo, message);
+    }
+
+    // PAUSE COMMAND
+    if (message.content.startsWith(`${PREFIX}pause`)) {
+      return togglePause(serverInfo, message);
     }
 
     message.channel.send("You need to enter a valid command!");

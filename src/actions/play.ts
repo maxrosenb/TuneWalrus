@@ -4,7 +4,7 @@ import { Song, ServerInfo, YtdlResults } from "../types";
 import { playThroughDiscord } from "../utils/utils";
 import { skip } from "./skip";
 import { joinVoiceChannel } from "@discordjs/voice";
-
+import { togglePause } from "./pause";
 const youtubesearchapi = require("youtube-search-api");
 
 export const play = async (
@@ -13,6 +13,11 @@ export const play = async (
   queue: Map<string, ServerInfo>,
   assertDominance: boolean = false
 ): Promise<void> => {
+  if (serverInfo?.isPaused) {
+    serverInfo.isPaused = false;
+    togglePause(serverInfo, message, false);
+    return;
+  }
   if (
     !message.client.user ||
     !message.guild ||
@@ -56,6 +61,7 @@ export const play = async (
       connection: connection,
       songs: [song],
       volume: 5,
+      isPaused: false,
     };
 
     queue.set(message.guild?.id, serverConstruct);

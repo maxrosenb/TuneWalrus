@@ -4,11 +4,11 @@ export const currentlyPlaying = (
   serverInfo: ServerInfo | undefined,
   message: Discord.Message
 ): void => {
-  if (!serverInfo?.connection) {
+  if (!serverInfo) {
     return;
   }
 
-  if (!serverInfo || !serverInfo.songs || serverInfo.songs.length === 0) {
+  if (!serverInfo.songs || !serverInfo.songs.length) {
     message.channel.send("Nothing currently playing!");
     return;
   }

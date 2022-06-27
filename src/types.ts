@@ -18,6 +18,7 @@ export type ServerInfo = {
   connection: VoiceConnection | null;
   songs: Song[];
   volume: number;
+  isPaused: boolean;
 };
 
 export type YtdlResults = { items: { id: string }[] };
