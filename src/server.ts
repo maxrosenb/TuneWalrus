@@ -27,19 +27,11 @@ try {
 
   const queue = new Map<string, ServerInfo>();
 
-  client.once("ready", () => {
+  client.once("ready", (): void => {
     console.log("Ready!");
   });
 
-  client.once("reconnecting", () => {
-    console.log("Reconnecting!");
-  });
-
-  client.once("disconnect", () => {
-    console.log("Disconnect!");
-  });
-
-  client.on("message", async (message) => {
+  client.on("message", async (message: Discord.Message): Promise<void> => {
     if (
       message.author.bot ||
       !message.content.startsWith(PREFIX) ||

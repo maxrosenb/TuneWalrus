@@ -5,7 +5,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "./node_modules/.bin/pm2 start src/server.ts --watch",
-    "postinstall": "$(yarn bin)/pm2 install typescript"
+    "postinstall": "./node_modules/.bin/pm2 install typescript"
   },
   "keywords": [],
   "author": "",
@@ -21,6 +21,7 @@
     "opusscript": "^0.0.8",
     "pm2": "^5.2.0",
     "youtube-search-api": "^1.1.0",
-    "ytdl-core": "^4.11.0"
+    "ytdl-core": "^4.11.0",
+    "ffmpeg-static": "^5.0.0"
   }
 }
