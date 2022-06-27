@@ -59,7 +59,7 @@ try {
       return;
     }
 
-    // ASSERT DOMAIN COMMAND
+    // ASSERT DOMINANCE COMMAND
     if (message.content.startsWith(`${PREFIX}assertdominance`)) {
       if (!serverQueue) {
         return;
@@ -144,7 +144,7 @@ try {
     if (message.content.startsWith(`${PREFIX}help`)) {
       const textChannel = message.channel as Discord.TextChannel;
       textChannel.send(
-        `${PREFIX}play - play a song\n${PREFIX}skip - skip the current song\n${PREFIX}stop - stop the current song\n${PREFIX}emptyqueue - empty the queue\n${PREFIX}setvolume - set the volume\n${PREFIX}listqueue - list the queue\n${PREFIX}assertdominance - play the current song again\n${PREFIX}god - say TuneWalrus is love. TuneWalrus is life. Accept TuneWalrus into yours and live happily for the rest of your days.`
+        "`!play` - play a song\n`!skip` - skip the current song\n`!stop` - stop the current song\n`!emptyqueue` - empty the queue\n`!setvolume` - set the volume\n`!listqueue` - list the queue\n`!assertdominance` - insert song to top of queue and skip current song"
       );
       return;
     }
