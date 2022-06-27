@@ -66,5 +66,5 @@ export const playUrl = async (
   }
 
   serverInfo.songs.splice(1, 0, song);
-  return skip(message, serverInfo);
+  return skip(message, serverInfo, queue);
 };

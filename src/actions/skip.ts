@@ -1,11 +1,12 @@
 import Discord from "discord.js";
 import { ServerInfo } from "../types";
-import { player } from "../utils/utils";
+import { player, playThroughDiscord } from "../utils/utils";
 export const skip = (
   message: Discord.Message,
-  serverInfo: ServerInfo | undefined
+  serverInfo: ServerInfo | undefined,
+  queue: Map<string, ServerInfo>
 ): void => {
-  if (!serverInfo?.connection) {
+  if (!serverInfo?.connection || !message.guild) {
     return;
   }
   if (!message.member?.voice.channel) {
@@ -18,5 +19,6 @@ export const skip = (
     message.channel.send("There is no song that I could skip!");
     return;
   }
-  player.stop();
+  serverInfo.songs.shift();
+  playThroughDiscord(message.guild, serverInfo.songs[0], queue);
 };

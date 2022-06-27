@@ -78,7 +78,7 @@ export const play = async (
       "**ASSERTING DOMINANCE** " + `${someEmoji ? someEmoji : ""}`
     );
     serverInfo.songs.splice(1, 0, song);
-    return skip(message, serverInfo);
+    return skip(message, serverInfo, queue);
   }
 
   serverInfo.songs.push(song);

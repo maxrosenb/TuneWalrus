@@ -59,7 +59,7 @@ try {
 
     // SKIP COMMAND
     if (message.content.startsWith(`${PREFIX}skip`)) {
-      return skip(message, serverInfo);
+      return skip(message, serverInfo, queue);
     }
 
     // ASSERT DOMINANCE COMMAND
