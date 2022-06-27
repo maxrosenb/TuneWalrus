@@ -16,6 +16,10 @@ export const playThroughDiscord = (
 ): void => {
   const serverInfo = queue.get(guild.id);
 
+  if (!serverInfo?.connection) {
+    return;
+  }
+
   if (!serverInfo) {
     return;
   }
@@ -34,7 +38,7 @@ export const playThroughDiscord = (
     player.on(AudioPlayerStatus.Idle, () => {
       serverInfo.songs.shift();
       if (serverInfo.songs.length === 0) {
-        serverInfo.connection.disconnect();
+        serverInfo.connection?.disconnect();
       }
       playThroughDiscord(guild, serverInfo.songs[0], queue);
     });

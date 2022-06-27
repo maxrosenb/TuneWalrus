@@ -5,7 +5,7 @@ export const skip = (
   message: Discord.Message,
   serverInfo: ServerInfo | undefined
 ): void => {
-  if (!serverInfo) {
+  if (!serverInfo?.connection) {
     return;
   }
   if (!message.member?.voice.channel) {

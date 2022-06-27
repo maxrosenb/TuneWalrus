@@ -13,6 +13,7 @@ import { help } from "./actions/help";
 import { hello } from "./actions/hello";
 import { playPlaylist } from "./actions/playPlaylist";
 import { reset } from "./actions/reset";
+import { currentlyPlaying } from "./actions/currentPlaying";
 try {
   if (!TOKEN) {
     console.log("No token found. Please set TOKEN in config.ts");
@@ -103,6 +104,11 @@ try {
     // RESET COMMAND
     if (message.content.startsWith(`${PREFIX}reset`)) {
       return reset(message, serverInfo, queue);
+    }
+
+    // CURRENTLY PLAYING COMMAND
+    if (message.content.startsWith(`${PREFIX}current`)) {
+      return currentlyPlaying(serverInfo, message);
     }
 
     message.channel.send("You need to enter a valid command!");

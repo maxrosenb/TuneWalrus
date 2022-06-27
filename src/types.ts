@@ -15,7 +15,7 @@ export type ServerInfo = {
     | Discord.TextChannel
     | Discord.ThreadChannel
     | Discord.VoiceChannel;
-  connection: VoiceConnection;
+  connection: VoiceConnection | null;
   songs: Song[];
   volume: number;
 };
