@@ -14,10 +14,34 @@ const boingFunc = async () => {
   return boingSound;
 };
 
+const groceryFunc = async () => {
+  const grocerySound: ytdl.videoInfo = await ytdl.getInfo(
+    "https://www.youtube.com/watch?v=GTsBU3RtF2c&t=766s" // GROCERY sound
+  );
+  return grocerySound;
+};
+
+const scoobyFunc = async () => {
+  const scoobySound: ytdl.videoInfo = await ytdl.getInfo(
+    "https://www.youtube.com/watch?v=xW6UWCUMhNE" // SCOOBY sound
+  );
+  return scoobySound;
+};
+
 let boingSound: ytdl.videoInfo;
+let grocerySound: ytdl.videoInfo;
+let scoobySound: ytdl.videoInfo;
 
 boingFunc().then((boing) => {
   boingSound = boing;
+});
+
+groceryFunc().then((grocery) => {
+  grocerySound = grocery;
+});
+
+scoobyFunc().then((scooby) => {
+  scoobySound = scooby;
 });
 
 export const playUrl = async (
@@ -51,6 +75,14 @@ export const playUrl = async (
 
   if (url === "https://www.youtube.com/watch?v=d7vfbyFl5kc") {
     songInfo = boingSound;
+  }
+
+  if (url === "https://www.youtube.com/watch?v=GTsBU3RtF2c&t=766s") {
+    songInfo = grocerySound;
+  }
+
+  if (url === "https://www.youtube.com/watch?v=xW6UWCUMhNE") {
+    songInfo = scoobySound;
   } else {
     songInfo = await ytdl.getInfo(
       url // BOING sound
