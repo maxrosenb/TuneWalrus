@@ -7,7 +7,8 @@ export const reset = async (
   message: Discord.Message,
   serverInfo: ServerInfo | undefined,
   queue: Map<string, ServerInfo>,
-  client: Discord.Client
+  client: Discord.Client,
+  withmessage: boolean = true
 ): Promise<void> => {
   console.log("resetting");
 

@@ -86,7 +86,7 @@ try {
 
     // STOP COMMAND
     if (message.content.startsWith(`${PREFIX}stop`)) {
-      stop(message, serverInfo);
+      stop(message, serverInfo, queue, client);
       return;
     }
 
@@ -179,6 +179,16 @@ try {
         serverInfo,
         queue,
         "https://www.youtube.com/watch?v=N4Db0oYKXvw"
+      );
+    }
+
+    // DEATH COMMAND
+    if (message.content.startsWith(`${PREFIX}death`)) {
+      return playUrl(
+        message,
+        serverInfo,
+        queue,
+        "https://www.youtube.com/watch?v=9Z1IGjr2cT0"
       );
     }
 
