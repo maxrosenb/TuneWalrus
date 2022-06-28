@@ -1,8 +1,8 @@
 export const emptyQueue = (serverInfo, message) => {
     if (serverInfo) {
-        serverInfo.songs = [];
+        serverInfo.songs = []
     }
-    const textChannel = message.channel;
-    textChannel.send(`Queue Emptied.`);
-    return;
-};
+    const textChannel = message.channel
+    textChannel.send(`Queue Emptied.`)
+    return
+}

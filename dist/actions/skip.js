@@ -1,4 +1,4 @@
-import { playThroughDiscord } from '../utils/utils';
+import { playThroughDiscord } from '../utils/utils'
 /**
  * Skip a song
  * @param {Discord.Message} message - The Discord Message object
@@ -7,16 +7,16 @@ import { playThroughDiscord } from '../utils/utils';
  */
 export const skip = (message, serverInfo, queue) => {
     if (!serverInfo?.connection || !message.guild) {
-        return;
+        return
     }
     if (!message.member?.voice.channel) {
-        message.channel.send('You have to be in a voice channel to stop the music!');
-        return;
+        message.channel.send('You have to be in a voice channel to stop the music!')
+        return
     }
     if (!serverInfo) {
-        message.channel.send('There is no song that I could skip!');
-        return;
+        message.channel.send('There is no song that I could skip!')
+        return
     }
-    serverInfo.songs.shift();
-    playThroughDiscord(message.guild, serverInfo.songs[0], queue);
-};
+    serverInfo.songs.shift()
+    playThroughDiscord(message.guild, serverInfo.songs[0], queue)
+}

@@ -1,12 +1,12 @@
-import { play } from './play';
+import { play } from './play'
 export const assertDominance = (serverInfo, message, queue) => {
     if (!serverInfo) {
-        return;
+        return
     }
     if (serverInfo.songs.length) {
-        play(message, serverInfo, queue, true);
-        return;
+        play(message, serverInfo, queue, true)
+        return
     } else {
-        play(message, serverInfo, queue, false);
+        play(message, serverInfo, queue, false)
     }
-};
+}

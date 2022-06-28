@@ -1,4 +1,4 @@
-import 'dotenv/config';
+import 'dotenv/config'
 
-export const PREFIX: string = '!';
-export const TOKEN: string | undefined = process.env.TOKEN;
+export const PREFIX = '!'
+export const { TOKEN } = process.env

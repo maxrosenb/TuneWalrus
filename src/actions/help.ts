@@ -1,5 +1,4 @@
-import { ServerInfo } from '../types';
-import Discord from 'discord.js';
+import Discord from 'discord.js'
 
 export const help = (message: Discord.Message) => {
     message.channel.send(
@@ -12,6 +11,5 @@ export const help = (message: Discord.Message) => {
             '`!assertdominance`   -   insert song to top of queue and skip current song\n' +
             '`!current`   -   show the current song\n' +
             '`!reset`   -   **if the audio player is fucking up, try using this command to reset it**'
-    );
-    return;
-};
+    )
+}

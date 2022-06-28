@@ -9,6 +9,6 @@ export const help = (message) => {
             '`!assertdominance`   -   insert song to top of queue and skip current song\n' +
             '`!current`   -   show the current song\n' +
             '`!reset`   -   **if the audio player is fucking up, try using this command to reset it**'
-    );
-    return;
-};
+    )
+    return
+}

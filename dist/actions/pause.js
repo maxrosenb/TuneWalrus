@@ -1,4 +1,4 @@
-import { player } from '../utils/utils';
+import { player } from '../utils/utils'
 /**
  * Toggles the pause state of the player.
  * @param {Discord.Message} message - The Discord Message object
@@ -7,22 +7,22 @@ import { player } from '../utils/utils';
  */
 export const togglePause = (message, serverInfo, shouldPause = true) => {
     if (!serverInfo) {
-        return;
+        return
     }
     if (!message.member?.voice.channel) {
-        message.channel.send('You have to be in a voice channel to pause the music!');
-        return;
+        message.channel.send('You have to be in a voice channel to pause the music!')
+        return
     }
     if (!serverInfo) {
-        message.channel.send('There is no song that I could skip!');
-        return;
+        message.channel.send('There is no song that I could skip!')
+        return
     }
     if (!shouldPause || serverInfo.isPaused) {
-        player.unpause();
-        serverInfo.isPaused = false;
-        return;
+        player.unpause()
+        serverInfo.isPaused = false
+        return
     }
-    player.pause();
-    serverInfo.isPaused = true;
-    return;
-};
+    player.pause()
+    serverInfo.isPaused = true
+    return
+}

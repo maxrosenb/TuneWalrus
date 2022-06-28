@@ -1,8 +1,9 @@
-import { play } from './play';
-import Discord from 'discord.js';
-import ytdl from 'ytdl-core';
-import { Song, ServerInfo, YtdlResults } from '../types';
-const youtubesearchapi = require('youtube-search-api');
+import Discord from 'discord.js'
+import ytdl from 'ytdl-core'
+import { play } from './play'
+import { Song, ServerInfo, YtdlResults } from '../types'
+
+const youtubesearchapi = require('youtube-search-api')
 
 export const insertNext = async (
     serverInfo: ServerInfo | undefined,
@@ -10,50 +11,46 @@ export const insertNext = async (
     queue: Map<string, ServerInfo>
 ) => {
     if (!serverInfo) {
-        return;
+        return
     }
     if (!serverInfo.songs.length) {
-        play(message, serverInfo, queue, false);
-        return;
+        play(message, serverInfo, queue, false)
     } else {
         if (
             !message.client.user ||
             !message.guild ||
             !message.member?.voice.channel ||
             message.member?.voice.channel.permissionsFor(message.client.user) === null
-        )
-            return;
+        ) {
+            return
+        }
 
-        const songInput: string = message.content.split(' ').slice(1).join(' ');
+        const songInput: string = message.content.split(' ').slice(1).join(' ')
 
-        let linkToDownload;
+        let linkToDownload
         if (songInput.includes('https')) {
-            linkToDownload = songInput;
+            linkToDownload = songInput
         } else {
             const searchResults: YtdlResults = await youtubesearchapi.GetListByKeyword(
                 songInput,
                 false,
                 1
-            );
-            linkToDownload = `https://www.youtube.com/watch?v=${searchResults.items[0].id}`;
+            )
+            linkToDownload = `https://www.youtube.com/watch?v=${searchResults.items[0].id}`
         }
 
-        let songInfo: ytdl.videoInfo;
-
-        songInfo = await ytdl.getInfo(linkToDownload);
+        const songInfo: ytdl.videoInfo = await ytdl.getInfo(linkToDownload)
 
         const song: Song = {
             title: songInfo.videoDetails.title,
             url: songInfo.videoDetails.video_url,
             userAddedBy: message.author.username,
-        };
+        }
 
-        serverInfo.songs.splice(1, 0, song);
+        serverInfo.songs.splice(1, 0, song)
 
         message.channel.send(
             'asserting beta status of ' + song.userAddedBy + '\n will play' + song.title + ' next'
-        );
-
-        return;
+        )
     }
-};
+}

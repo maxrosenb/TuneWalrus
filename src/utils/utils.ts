@@ -1,10 +1,10 @@
-import Discord from 'discord.js';
-import ytdl from 'ytdl-core';
-import { ServerInfo, Song } from '../types';
+import Discord from 'discord.js'
+import ytdl from 'ytdl-core'
+import { ServerInfo, Song } from '../types'
 
-const { createAudioPlayer, createAudioResource, AudioPlayerStatus } = require('@discordjs/voice');
+const { createAudioPlayer, createAudioResource, AudioPlayerStatus } = require('@discordjs/voice')
 
-export const player = createAudioPlayer();
+export const player = createAudioPlayer()
 
 /**
  * Play a song through a voice channe via the Discord API
@@ -18,25 +18,25 @@ export const playThroughDiscord = (
     song: Song,
     queue: Map<string, ServerInfo>
 ): void => {
-    const serverInfo = queue.get(guild.id);
+    const serverInfo = queue.get(guild.id)
 
     if (!serverInfo?.connection) {
-        return;
+        return
     }
 
     try {
-        player.play(createAudioResource(ytdl(song.url)));
+        player.play(createAudioResource(ytdl(song.url)))
         player.on(AudioPlayerStatus.Idle, () => {
-            serverInfo.songs.shift();
+            serverInfo.songs.shift()
             if (serverInfo.songs.length === 0 && serverInfo.connection) {
-                serverInfo.connection.disconnect();
+                serverInfo.connection.disconnect()
             }
-            playThroughDiscord(guild, serverInfo.songs[0], queue);
-        });
+            playThroughDiscord(guild, serverInfo.songs[0], queue)
+        })
 
-        serverInfo.connection.subscribe(player);
-        serverInfo.textChannel.send(`Now playing: **${song.title}**`);
+        serverInfo.connection.subscribe(player)
+        serverInfo.textChannel.send(`Now playing: **${song.title}**`)
     } catch (err) {
-        console.log(err);
+        console.log(err)
     }
-};
+}

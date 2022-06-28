@@ -1,6 +1,6 @@
-import { ServerInfo } from '../types';
-import Discord from 'discord.js';
-import { play } from './play';
+import Discord from 'discord.js'
+import { ServerInfo } from '../types'
+import { play } from './play'
 
 export const assertDominance = (
     serverInfo: ServerInfo | undefined,
@@ -8,12 +8,11 @@ export const assertDominance = (
     queue: Map<string, ServerInfo>
 ) => {
     if (!serverInfo) {
-        return;
+        return
     }
     if (serverInfo.songs.length) {
-        play(message, serverInfo, queue, true);
-        return;
+        play(message, serverInfo, queue, true)
     } else {
-        play(message, serverInfo, queue, false);
+        play(message, serverInfo, queue, false)
     }
-};
+}

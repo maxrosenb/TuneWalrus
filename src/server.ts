@@ -1,12 +1,12 @@
-import Discord from 'discord.js';
-import { PREFIX, TOKEN } from './config';
-import { routeMessage } from './commands';
-import { ServerInfo } from './types';
+import Discord from 'discord.js'
+import { PREFIX, TOKEN } from './config'
+import { routeMessage } from './commands'
+import { ServerInfo } from './types'
 
 try {
     if (!TOKEN) {
-        console.log('No token found. Please set TOKEN in config.ts');
-        process.exit(1);
+        console.log('No token found. Please set TOKEN in config.ts')
+        process.exit(1)
     }
 
     const client: Discord.Client = new Discord.Client({
@@ -15,21 +15,21 @@ try {
             Discord.Intents.FLAGS.GUILD_MESSAGES,
             Discord.Intents.FLAGS.GUILD_VOICE_STATES,
         ],
-    });
+    })
 
-    const queue = new Map<string, ServerInfo>();
+    const queue = new Map<string, ServerInfo>()
 
     client.once('ready', (): void => {
-        console.log('Ready!');
-    });
+        console.log('Ready!')
+    })
 
     client.on('messageCreate', async (message: Discord.Message): Promise<void> => {
-        if (message.author.bot || !message.content.startsWith(PREFIX) || !message.guild) return;
+        if (message.author.bot || !message.content.startsWith(PREFIX) || !message.guild) return
 
-        await routeMessage(message, queue.get(message.guild.id), queue, client);
-    });
+        await routeMessage(message, queue.get(message.guild.id), queue, client)
+    })
 
-    client.login(TOKEN);
+    client.login(TOKEN)
 } catch (err) {
-    console.log(err);
+    console.log(err)
 }

@@ -1,12 +1,12 @@
-import Discord from 'discord.js';
-import ytdl from 'ytdl-core';
-import { joinVoiceChannel } from '@discordjs/voice';
-import { togglePause } from './pause';
-import { Song, ServerInfo, YtdlResults } from '../types';
-import { playThroughDiscord } from '../utils/utils';
-import { skip } from './skip';
+import Discord from 'discord.js'
+import ytdl from 'ytdl-core'
+import { joinVoiceChannel } from '@discordjs/voice'
+import { togglePause } from './pause'
+import { Song, ServerInfo, YtdlResults } from '../types'
+import { playThroughDiscord } from '../utils/utils'
+import { skip } from './skip'
 
-const youtubesearchapi = require('youtube-search-api');
+const youtubesearchapi = require('youtube-search-api')
 
 /**
  * Play a song from the queue.
@@ -23,9 +23,9 @@ export const play = async (
 ): Promise<void> => {
     try {
         if (serverInfo?.isPaused) {
-            serverInfo.isPaused = false;
-            togglePause(message, serverInfo, false);
-            return;
+            serverInfo.isPaused = false
+            togglePause(message, serverInfo, false)
+            return
         }
         if (
             !message.client.user ||
@@ -33,30 +33,30 @@ export const play = async (
             !message.member?.voice.channel ||
             message.member?.voice.channel.permissionsFor(message.client.user) === null
         ) {
-            return;
+            return
         }
 
-        const songInput: string = message.content.split(' ').slice(1).join(' ');
+        const songInput: string = message.content.split(' ').slice(1).join(' ')
 
-        let linkToDownload;
+        let linkToDownload
         if (songInput.includes('https')) {
-            linkToDownload = songInput;
+            linkToDownload = songInput
         } else {
             const searchResults: YtdlResults = await youtubesearchapi.GetListByKeyword(
                 songInput,
                 false,
                 1
-            );
-            linkToDownload = `https://www.youtube.com/watch?v=${searchResults.items[0].id}`;
+            )
+            linkToDownload = `https://www.youtube.com/watch?v=${searchResults.items[0].id}`
         }
 
-        const songInfo: ytdl.videoInfo = await ytdl.getInfo(linkToDownload);
+        const songInfo: ytdl.videoInfo = await ytdl.getInfo(linkToDownload)
 
         const song: Song = {
             title: songInfo.videoDetails.title,
             url: songInfo.videoDetails.video_url,
             userAddedBy: message.author.username,
-        };
+        }
 
         if (!serverInfo) {
             // If we've never seen this server before, add it to the Map
@@ -66,7 +66,7 @@ export const play = async (
                 guildId: message.guild.id,
                 adapterCreator: message.guild.voiceAdapterCreator,
                 selfDeaf: false,
-            });
+            })
 
             const serverConstruct: ServerInfo = {
                 textChannel: message.channel,
@@ -74,32 +74,31 @@ export const play = async (
                 songs: [song],
                 volume: 5,
                 isPaused: false,
-            };
+            }
 
-            queue.set(message.guild?.id, serverConstruct);
+            queue.set(message.guild?.id, serverConstruct)
 
-            playThroughDiscord(message.guild, serverConstruct.songs[0], queue);
-            return;
+            playThroughDiscord(message.guild, serverConstruct.songs[0], queue)
+            return
         }
 
         if (assertDominance) {
             const someEmoji = message.guild?.emojis?.cache.find(
                 (emoji) => emoji.name === '2434pepebusiness'
-            );
-
-            message.channel.send(`**ASSERTING DOMINANCE**  ${someEmoji || ''}`);
-            serverInfo.songs.splice(1, 0, song);
-            skip(message, serverInfo, queue);
+            )
+            message.channel.send(`**ASSERTING DOMINANCE**  ${someEmoji || ''}`)
+            serverInfo.songs.splice(1, 0, song)
+            skip(message, serverInfo, queue)
         }
 
-        serverInfo.songs.push(song);
+        serverInfo.songs.push(song)
 
-        playThroughDiscord(message.guild, serverInfo.songs[0], queue);
+        playThroughDiscord(message.guild, serverInfo.songs[0], queue)
 
-        message.channel.send(`${song.title} has been added to the queue!`);
+        message.channel.send(`${song.title} has been added to the queue!`)
 
-        return;
+        return
     } catch (error) {
-        console.log(error);
+        console.log(error)
     }
-};
+}
