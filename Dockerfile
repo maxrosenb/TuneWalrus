@@ -20,7 +20,7 @@ RUN apt-get install -y redis
 COPY . /app
 WORKDIR /app
 
-RUN redis-server
+RUN redis-server --daemonize yes
 # If you are building your code for production
 # RUN npm ci --only=production
 
