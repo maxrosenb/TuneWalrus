@@ -51,71 +51,75 @@ export const playUrl = async (
   url: string,
   assertDominance: boolean = false
 ): Promise<void> => {
-  if (serverInfo?.isPaused) {
-    serverInfo.isPaused = false;
-    togglePause(serverInfo, message, false);
-    return;
-  }
-  const someEmoji = message.guild?.emojis?.cache.find(
-    (emoji) => emoji.name === "2434pepebusiness"
-  );
-  if (someEmoji) {
-    message.channel.send(`${someEmoji}`);
-  }
-
-  if (
-    !message.client.user ||
-    !message.guild ||
-    !message.member?.voice.channel ||
-    message.member?.voice.channel.permissionsFor(message.client.user) === null
-  )
-    return;
-
-  let songInfo: ytdl.videoInfo;
-
-  if (url === "https://www.youtube.com/watch?v=d7vfbyFl5kc") {
-    songInfo = boingSound;
-  }
-
-  if (url === "https://www.youtube.com/watch?v=GTsBU3RtF2c&t=766s") {
-    songInfo = grocerySound;
-  }
-
-  if (url === "https://www.youtube.com/watch?v=xW6UWCUMhNE") {
-    songInfo = scoobySound;
-  } else {
-    songInfo = await ytdl.getInfo(
-      url // BOING sound
+  try {
+    if (serverInfo?.isPaused) {
+      serverInfo.isPaused = false;
+      togglePause(serverInfo, message, false);
+      return;
+    }
+    const someEmoji = message.guild?.emojis?.cache.find(
+      (emoji) => emoji.name === "2434pepebusiness"
     );
-  }
+    if (someEmoji) {
+      message.channel.send(`${someEmoji}`);
+    }
 
-  const song: Song = {
-    title: songInfo.videoDetails.title,
-    url: songInfo.videoDetails.video_url,
-    userAddedBy: message.author.username,
-  };
+    if (
+      !message.client.user ||
+      !message.guild ||
+      !message.member?.voice.channel ||
+      message.member?.voice.channel.permissionsFor(message.client.user) === null
+    )
+      return;
 
-  if (!serverInfo) {
-    const connection = joinVoiceChannel({
-      channelId: message.member.voice.channel.id,
-      guildId: message.guild.id,
-      adapterCreator: message.guild.voiceAdapterCreator,
-      selfDeaf: false,
-    });
-    // If we've never seen this server before, add it to the Map
-    const serverConstruct: ServerInfo = {
-      textChannel: message.channel,
-      connection: connection,
-      songs: [song],
-      volume: 5,
-      isPaused: false,
+    let songInfo: ytdl.videoInfo;
+
+    if (url === "https://www.youtube.com/watch?v=d7vfbyFl5kc") {
+      songInfo = boingSound;
+    }
+
+    if (url === "https://www.youtube.com/watch?v=GTsBU3RtF2c&t=766s") {
+      songInfo = grocerySound;
+    }
+
+    if (url === "https://www.youtube.com/watch?v=xW6UWCUMhNE") {
+      songInfo = scoobySound;
+    } else {
+      songInfo = await ytdl.getInfo(
+        url // BOING sound
+      );
+    }
+
+    const song: Song = {
+      title: songInfo.videoDetails.title,
+      url: songInfo.videoDetails.video_url,
+      userAddedBy: message.author.username,
     };
 
-    queue.set(message.guild?.id, serverConstruct);
-    playThroughDiscord(message.guild, serverConstruct.songs[0], queue);
-    return;
-  }
+    if (!serverInfo) {
+      const connection = joinVoiceChannel({
+        channelId: message.member.voice.channel.id,
+        guildId: message.guild.id,
+        adapterCreator: message.guild.voiceAdapterCreator,
+        selfDeaf: false,
+      });
+      // If we've never seen this server before, add it to the Map
+      const serverConstruct: ServerInfo = {
+        textChannel: message.channel,
+        connection: connection,
+        songs: [song],
+        volume: 5,
+        isPaused: false,
+      };
 
-  serverInfo.songs.splice(1, 0, song);
-  return skip(message, serverInfo, queue);
+      queue.set(message.guild?.id, serverConstruct);
+      playThroughDiscord(message.guild, serverConstruct.songs[0], queue);
+      return;
+    }
+
+    serverInfo.songs.splice(1, 0, song);
+    return skip(message, serverInfo, queue);
+  } catch (error) {
+    console.log(error);
+  }
 };

@@ -10,34 +10,38 @@ export const reset = async (
   client: Discord.Client,
   withMessage: boolean = true
 ): Promise<void> => {
-  console.log("resetting");
+  try {
+    console.log("resetting");
 
-  if (withMessage) {
-    const someEmoji: Discord.GuildEmoji | undefined = client.emojis.cache.find(
-      (emoji) => emoji.name === "6757_Sadge"
-    );
+    if (withMessage) {
+      const someEmoji: Discord.GuildEmoji | undefined =
+        client.emojis.cache.find((emoji) => emoji.name === "6757_Sadge");
 
-    if (someEmoji) {
-      message.channel.send(
-        `Resetting... TuneWalrus is sorry to have failed you ` + `${someEmoji}`
-      );
-    } else {
-      message.channel.send(
-        `Resetting... TuneWalrus is sorry to have failed you `
-      );
+      if (someEmoji) {
+        message.channel.send(
+          `Resetting... TuneWalrus is sorry to have failed you ` +
+            `${someEmoji}`
+        );
+      } else {
+        message.channel.send(
+          `Resetting... TuneWalrus is sorry to have failed you `
+        );
+      }
     }
-  }
-  if (
-    !message.client.user ||
-    !message.guild ||
-    !message.member?.voice.channel ||
-    !message.member?.voice.channel.permissionsFor(message.client.user) ||
-    !serverInfo
-  )
-    return;
+    if (
+      !message.client.user ||
+      !message.guild ||
+      !message.member?.voice.channel ||
+      !message.member?.voice.channel.permissionsFor(message.client.user) ||
+      !serverInfo
+    )
+      return;
 
-  player.stop();
-  serverInfo.connection?.disconnect();
-  serverInfo.connection = null;
-  queue.delete(message.guild.id);
+    player.stop();
+    serverInfo.connection?.disconnect();
+    serverInfo.connection = null;
+    queue.delete(message.guild.id);
+  } catch (err) {
+    console.log(err);
+  }
 };
