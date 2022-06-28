@@ -95,6 +95,10 @@ export const play = async (
 
   serverInfo.songs.push(song);
 
+  if (serverInfo.songs.length) {
+    playThroughDiscord(message.guild, serverInfo.songs[0], queue);
+  }
+
   message.channel.send(`${song.title} has been added to the queue!`);
   return;
 };
