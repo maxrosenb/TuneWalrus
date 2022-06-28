@@ -66,7 +66,8 @@ try {
     // ASSERT DOMINANCE COMMAND
     if (
       message.content.startsWith(`${PREFIX}assertdominance`) ||
-      message.content.startsWith(`${PREFIX}assert`)
+      message.content.startsWith(`${PREFIX}assert`) ||
+      message.content.startsWith(`${PREFIX}ad`)
     ) {
       return assertDominance(serverInfo, message, queue);
     }
