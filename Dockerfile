@@ -13,7 +13,7 @@ RUN npm install ts-node -g
 
 FROM nikolaik/python-nodejs:python3.5-nodejs8
 
-RUN apt install redis-server
+RUN apt-get install redis
 
 COPY . /app
 WORKDIR /app
