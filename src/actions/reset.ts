@@ -8,22 +8,24 @@ export const reset = async (
   serverInfo: ServerInfo | undefined,
   queue: Map<string, ServerInfo>,
   client: Discord.Client,
-  withmessage: boolean = true
+  withMessage: boolean = true
 ): Promise<void> => {
   console.log("resetting");
 
-  const someEmoji: Discord.GuildEmoji | undefined = client.emojis.cache.find(
-    (emoji) => emoji.name === "6757_Sadge"
-  );
+  if (withMessage) {
+    const someEmoji: Discord.GuildEmoji | undefined = client.emojis.cache.find(
+      (emoji) => emoji.name === "6757_Sadge"
+    );
 
-  if (someEmoji) {
-    message.channel.send(
-      `Resetting... TuneWalrus is sorry to have failed you ` + `${someEmoji}`
-    );
-  } else {
-    message.channel.send(
-      `Resetting... TuneWalrus is sorry to have failed you `
-    );
+    if (someEmoji) {
+      message.channel.send(
+        `Resetting... TuneWalrus is sorry to have failed you ` + `${someEmoji}`
+      );
+    } else {
+      message.channel.send(
+        `Resetting... TuneWalrus is sorry to have failed you `
+      );
+    }
   }
   if (
     !message.client.user ||
