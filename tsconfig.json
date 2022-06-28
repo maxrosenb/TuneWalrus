@@ -5,10 +5,7 @@
         "strict": true,
         "moduleResolution": "node",
         "esModuleInterop": true,
-        "target": "es2022",
-   
+        "target": "es2022"
     },
-    "exclude": [
-        "./node_modules"
-    ]
+    "exclude": ["./node_modules"]
 }

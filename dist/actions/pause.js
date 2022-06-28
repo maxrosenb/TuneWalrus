@@ -1,18 +1,11 @@
-import Discord from 'discord.js';
-import { ServerInfo } from '../types';
 import { player } from '../utils/utils';
-
 /**
  * Toggles the pause state of the player.
  * @param {Discord.Message} message - The Discord Message object
  * @param {ServerInfo} serverInfo - The server info object
  * @param {boolean} shouldPause - Whether or not to pause the player
  */
-export const togglePause = (
-    message: Discord.Message,
-    serverInfo: ServerInfo | undefined,
-    shouldPause: boolean = true
-): void => {
+export const togglePause = (message, serverInfo, shouldPause = true) => {
     if (!serverInfo) {
         return;
     }
@@ -31,4 +24,5 @@ export const togglePause = (
     }
     player.pause();
     serverInfo.isPaused = true;
+    return;
 };

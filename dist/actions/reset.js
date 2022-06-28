@@ -1,9 +1,5 @@
-import Discord from 'discord.js';
-import { ServerInfo } from '../types';
 import { player } from '../utils/utils';
-
 const youtubesearchapi = require('youtube-search-api');
-
 /**
  * Resets the player if it has a problem
  * @param {Discord.Message} message - The Discord Message object
@@ -12,22 +8,11 @@ const youtubesearchapi = require('youtube-search-api');
  * @param {client} Discord.Client - The Discord client object
  * @param {boolean}} withMessage - Whether or not to send a message
  */
-
-export const reset = async (
-    message: Discord.Message,
-    serverInfo: ServerInfo | undefined,
-    queue: Map<string, ServerInfo>,
-    client: Discord.Client,
-    withMessage: boolean = true
-): Promise<void> => {
+export const reset = async (message, serverInfo, queue, client, withMessage = true) => {
     try {
         console.log('resetting');
-
         if (withMessage) {
-            const someEmoji: Discord.GuildEmoji | undefined = client.emojis.cache.find(
-                (emoji) => emoji.name === '6757_Sadge'
-            );
-
+            const someEmoji = client.emojis.cache.find((emoji) => emoji.name === '6757_Sadge');
             if (someEmoji) {
                 message.channel.send(
                     `Resetting... TuneWalrus is sorry to have failed you ` + `${someEmoji}`
@@ -44,7 +29,6 @@ export const reset = async (
             !serverInfo
         )
             return;
-
         player.stop();
         serverInfo.connection?.disconnect();
         serverInfo.connection = null;

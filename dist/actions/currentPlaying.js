@@ -1,13 +1,7 @@
-import { ServerInfo } from '../types';
-import Discord from 'discord.js';
-export const currentlyPlaying = (
-    serverInfo: ServerInfo | undefined,
-    message: Discord.Message
-): void => {
+export const currentlyPlaying = (serverInfo, message) => {
     if (!serverInfo) {
         return;
     }
-
     if (!serverInfo.songs || !serverInfo.songs.length) {
         message.channel.send('Nothing currently playing!');
         return;

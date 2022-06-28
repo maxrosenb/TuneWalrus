@@ -1,7 +1,4 @@
-import { ServerInfo } from '../types';
-import Discord from 'discord.js';
-
-export const help = (message: Discord.Message) => {
+export const help = (message) => {
     message.channel.send(
         '`!play`   -   play a song, or unpause music\n' +
             '`!skip`   -   skip the current song\n' +

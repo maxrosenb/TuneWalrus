@@ -1,48 +1,39 @@
-import Discord from 'discord.js';
 import ytdl from 'ytdl-core';
-import { joinVoiceChannel } from '@discordjs/voice';
-import { Song, ServerInfo } from '../types';
 import { playThroughDiscord } from '../utils/utils';
 import { skip } from './skip';
+import { joinVoiceChannel } from '@discordjs/voice';
 import { togglePause } from './pause';
-
+const youtubesearchapi = require('youtube-search-api');
 const boingFunc = async () => {
-    const boingSound: ytdl.videoInfo = await ytdl.getInfo(
+    const boingSound = await ytdl.getInfo(
         'https://www.youtube.com/watch?v=d7vfbyFl5kc' // BOING sound
     );
     return boingSound;
 };
-
 const groceryFunc = async () => {
-    const grocerySound: ytdl.videoInfo = await ytdl.getInfo(
+    const grocerySound = await ytdl.getInfo(
         'https://www.youtube.com/watch?v=GTsBU3RtF2c&t=766s' // GROCERY sound
     );
     return grocerySound;
 };
-
 const scoobyFunc = async () => {
-    const scoobySound: ytdl.videoInfo = await ytdl.getInfo(
+    const scoobySound = await ytdl.getInfo(
         'https://www.youtube.com/watch?v=xW6UWCUMhNE' // SCOOBY sound
     );
     return scoobySound;
 };
-
-let boingSound: ytdl.videoInfo;
-let grocerySound: ytdl.videoInfo;
-let scoobySound: ytdl.videoInfo;
-
+let boingSound;
+let grocerySound;
+let scoobySound;
 boingFunc().then((boing) => {
     boingSound = boing;
 });
-
 groceryFunc().then((grocery) => {
     grocerySound = grocery;
 });
-
 scoobyFunc().then((scooby) => {
     scoobySound = scooby;
 });
-
 /**
  * Play a song from a url
  * @param {string} Discord.Message - The Discord Message object
@@ -50,12 +41,7 @@ scoobyFunc().then((scooby) => {
  * @param {Map<string, ServerInfo>} queue - The queue map
  * @param {string} url - The url to play
  */
-export const playUrl = async (
-    message: Discord.Message,
-    serverInfo: ServerInfo | undefined,
-    queue: Map<string, ServerInfo>,
-    url: string
-): Promise<void> => {
+export const playUrl = async (message, serverInfo, queue, url) => {
     try {
         if (serverInfo?.isPaused) {
             serverInfo.isPaused = false;
@@ -68,26 +54,20 @@ export const playUrl = async (
         if (someEmoji) {
             message.channel.send(`${someEmoji}`);
         }
-
         if (
             !message.client.user ||
             !message.guild ||
             !message.member?.voice.channel ||
             message.member?.voice.channel.permissionsFor(message.client.user) === null
-        ) {
+        )
             return;
-        }
-
-        let songInfo: ytdl.videoInfo;
-
+        let songInfo;
         if (url === 'https://www.youtube.com/watch?v=d7vfbyFl5kc') {
             songInfo = boingSound;
         }
-
         if (url === 'https://www.youtube.com/watch?v=GTsBU3RtF2c&t=766s') {
             songInfo = grocerySound;
         }
-
         if (url === 'https://www.youtube.com/watch?v=xW6UWCUMhNE') {
             songInfo = scoobySound;
         } else {
@@ -95,13 +75,11 @@ export const playUrl = async (
                 url // BOING sound
             );
         }
-
-        const song: Song = {
+        const song = {
             title: songInfo.videoDetails.title,
             url: songInfo.videoDetails.video_url,
             userAddedBy: message.author.username,
         };
-
         if (!serverInfo) {
             const connection = joinVoiceChannel({
                 channelId: message.member.voice.channel.id,
@@ -110,21 +88,19 @@ export const playUrl = async (
                 selfDeaf: false,
             });
             // If we've never seen this server before, add it to the Map
-            const serverConstruct: ServerInfo = {
+            const serverConstruct = {
                 textChannel: message.channel,
-                connection,
+                connection: connection,
                 songs: [song],
                 volume: 5,
                 isPaused: false,
             };
-
             queue.set(message.guild?.id, serverConstruct);
             playThroughDiscord(message.guild, serverConstruct.songs[0], queue);
             return;
         }
-
         serverInfo.songs.splice(1, 0, song);
-        skip(message, serverInfo, queue);
+        return skip(message, serverInfo, queue);
     } catch (error) {
         console.log(error);
     }

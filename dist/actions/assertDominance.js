@@ -1,12 +1,5 @@
-import { ServerInfo } from '../types';
-import Discord from 'discord.js';
 import { play } from './play';
-
-export const assertDominance = (
-    serverInfo: ServerInfo | undefined,
-    message: Discord.Message,
-    queue: Map<string, ServerInfo>
-) => {
+export const assertDominance = (serverInfo, message, queue) => {
     if (!serverInfo) {
         return;
     }

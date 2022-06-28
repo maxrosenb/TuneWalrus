@@ -1,11 +1,7 @@
-import { ServerInfo } from '../types';
-import Discord from 'discord.js';
-
-export const setVolume = (serverInfo: ServerInfo | undefined, message: Discord.Message) => {
+export const setVolume = (serverInfo, message) => {
     if (!serverInfo) {
         return;
     }
-
     const [, volume] = message.content.split(' ');
     // make sure volume exists is a number between 0 and 10
     if (!volume || isNaN(Number(volume)) || Number(volume) < 0 || Number(volume) > 10) {
@@ -13,7 +9,6 @@ export const setVolume = (serverInfo: ServerInfo | undefined, message: Discord.M
         return;
     }
     serverInfo.volume = parseInt(volume);
-
     message.channel.send(`Volume set to ${volume}`);
     return;
 };
