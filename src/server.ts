@@ -16,6 +16,7 @@ import { reset } from "./actions/reset";
 import { currentlyPlaying } from "./actions/currentPlaying";
 import { togglePause } from "./actions/pause";
 import { playUrl } from "./actions/playUrl";
+import { assertBetaStatus } from "./actions/assertBeta";
 
 try {
   if (!TOKEN) {
@@ -70,6 +71,16 @@ try {
       message.content.startsWith(`${PREFIX}ad`)
     ) {
       return assertDominance(serverInfo, message, queue);
+    }
+
+    // ASSERT BERTA STATUS COMMAND
+    if (
+      message.content.startsWith(`${PREFIX}assertbeta`) ||
+      message.content.startsWith(`${PREFIX}beta`) ||
+      message.content.startsWith(`${PREFIX}ab`) ||
+      message.content.startsWith(`${PREFIX}next`)
+    ) {
+      return assertBetaStatus(serverInfo, message, queue);
     }
 
     // STOP COMMAND
