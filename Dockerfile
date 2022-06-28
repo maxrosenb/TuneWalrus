@@ -15,7 +15,7 @@ FROM nikolaik/python-nodejs:python3.5-nodejs8
 
 RUN wget -qO - https://raw.githubusercontent.com/yarnpkg/releases/gh-pages/debian/pubkey.gpg | apt-key add -
 RUN apt-get update
-RUN apt-get install redis
+RUN apt-get install redis -y whatever
 
 COPY . /app
 WORKDIR /app
