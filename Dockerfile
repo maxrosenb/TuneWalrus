@@ -18,8 +18,7 @@ apt-get -y install redis-server
 
 COPY . /app
 WORKDIR /app
-nohup redis-server &> redis.log &
-
+CMD redis-server
 # If you are building your code for production
 # RUN npm ci --only=production
 
