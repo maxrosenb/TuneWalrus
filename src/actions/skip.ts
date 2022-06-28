@@ -1,6 +1,13 @@
 import Discord from "discord.js";
 import { ServerInfo } from "../types";
 import { player, playThroughDiscord } from "../utils/utils";
+
+/**
+ * Skip a song
+ * @param {Discord.Message} message - The Discord Message object
+ * @param {ServerInfo} serverInfo - The server info object
+ * @param {Map<string, ServerInfo>} queue - The queue map
+ */
 export const skip = (
   message: Discord.Message,
   serverInfo: ServerInfo | undefined,

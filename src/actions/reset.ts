@@ -3,6 +3,15 @@ import { ServerInfo } from "../types";
 import { player } from "../utils/utils";
 const youtubesearchapi = require("youtube-search-api");
 
+/**
+ * Resets the player if it has a problem
+ * @param {Discord.Message} message - The Discord Message object
+ * @param {ServerInfo} serverInfo - The server info object
+ * @param {queue} Map<string, ServerInfo> - The queue map
+ * @param {client} Discord.Client - The Discord client object
+ * @param {boolean}} withMessage - Whether or not to send a message
+ */
+
 export const reset = async (
   message: Discord.Message,
   serverInfo: ServerInfo | undefined,

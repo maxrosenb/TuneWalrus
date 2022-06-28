@@ -9,6 +9,13 @@ const {
 
 export const player = createAudioPlayer();
 
+/**
+ * Play a song through a voice channe via the Discord API
+ * @param {Discord.Guild} guild - The Discord Guild object
+ * @param {Song} song - The song to play
+ * @param {Map<string, ServerInfo>} queue - The queue map
+ */
+
 export const playThroughDiscord = (
   guild: Discord.Guild,
   song: Song,
@@ -20,30 +27,19 @@ export const playThroughDiscord = (
     return;
   }
 
-  if (!serverInfo) {
-    return;
-  }
-
-  if (!song) {
-    queue.delete(guild.id);
-    return;
-  }
-
-  const resource = createAudioResource(ytdl(song.url));
-
   try {
-    player.play(resource);
-
-    serverInfo.connection.subscribe(player);
+    player.play(createAudioResource(ytdl(song.url)));
     player.on(AudioPlayerStatus.Idle, () => {
       serverInfo.songs.shift();
-      if (serverInfo.songs.length === 0) {
-        serverInfo.connection?.disconnect();
+      if (serverInfo.songs.length === 0 && serverInfo.connection) {
+        serverInfo.connection.disconnect();
       }
       playThroughDiscord(guild, serverInfo.songs[0], queue);
     });
+
+    serverInfo.connection.subscribe(player);
+    serverInfo.textChannel.send(`Now playing: **${song.title}**`);
   } catch (err) {
     console.log(err);
   }
-  serverInfo.textChannel.send(`Now playing: **${song.title}**`);
 };

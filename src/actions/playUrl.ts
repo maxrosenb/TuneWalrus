@@ -44,17 +44,23 @@ scoobyFunc().then((scooby) => {
   scoobySound = scooby;
 });
 
+/**
+ * Play a song from a url
+ * @param {string} Discord.Message - The Discord Message object
+ * @param {ServerInfo} serverInfo - The server info object
+ * @param {Map<string, ServerInfo>} queue - The queue map
+ * @param {string} url - The url to play
+ */
 export const playUrl = async (
   message: Discord.Message,
   serverInfo: ServerInfo | undefined,
   queue: Map<string, ServerInfo>,
-  url: string,
-  assertDominance: boolean = false
+  url: string
 ): Promise<void> => {
   try {
     if (serverInfo?.isPaused) {
       serverInfo.isPaused = false;
-      togglePause(serverInfo, message, false);
+      togglePause(message, serverInfo, false);
       return;
     }
     const someEmoji = message.guild?.emojis?.cache.find(

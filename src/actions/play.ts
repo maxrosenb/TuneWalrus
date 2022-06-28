@@ -7,6 +7,13 @@ import { joinVoiceChannel } from "@discordjs/voice";
 import { togglePause } from "./pause";
 const youtubesearchapi = require("youtube-search-api");
 
+/**
+ * Play a song from the queue.
+ * @param {string} Discord.Message - The Discord Message object.
+ * @param {ServerInfo} serverInfo - The server info object.
+ * @param {Map<string, ServerInfo>} queue - The queue map.
+ * @param {Discord.Client} client - The Discord client object.
+ */
 export const play = async (
   message: Discord.Message,
   serverInfo: ServerInfo | undefined,
@@ -16,7 +23,7 @@ export const play = async (
   try {
     if (serverInfo?.isPaused) {
       serverInfo.isPaused = false;
-      togglePause(serverInfo, message, false);
+      togglePause(message, serverInfo, false);
       return;
     }
     if (
@@ -49,13 +56,15 @@ export const play = async (
     };
 
     if (!serverInfo) {
+      // If we've never seen this server before, add it to the Map
+
       const connection = joinVoiceChannel({
         channelId: message.member.voice.channel.id,
         guildId: message.guild.id,
         adapterCreator: message.guild.voiceAdapterCreator,
         selfDeaf: false,
       });
-      // If we've never seen this server before, add it to the Map
+
       const serverConstruct: ServerInfo = {
         textChannel: message.channel,
         connection: connection,
@@ -65,6 +74,7 @@ export const play = async (
       };
 
       queue.set(message.guild?.id, serverConstruct);
+
       playThroughDiscord(message.guild, serverConstruct.songs[0], queue);
       return;
     }
@@ -83,11 +93,10 @@ export const play = async (
 
     serverInfo.songs.push(song);
 
-    if (serverInfo.songs.length) {
-      playThroughDiscord(message.guild, serverInfo.songs[0], queue);
-    }
+    playThroughDiscord(message.guild, serverInfo.songs[0], queue);
 
     message.channel.send(`${song.title} has been added to the queue!`);
+
     return;
   } catch (error) {
     console.log(error);
