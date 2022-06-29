@@ -62,7 +62,7 @@ export const routeMessage = async (message: Discord.Message): Promise<void> => {
     }
 
     if (message.content.startsWith(`${PREFIX}emptyqueue`)) {
-        emptyQueue(message, serverInfo)
+        emptyQueue(message)
         return
     }
 

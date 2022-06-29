@@ -5,7 +5,7 @@ import { Song, ServerInfo } from '../types'
 import { playThroughVC } from '../utils/playThroughVoiceChannel'
 import { skip } from './skip'
 import { getSongObjectFromUserInput } from '../utils/getSongObjectFromUserInput'
-import { serverMap } from '../utils/serverMap'
+import { serverMap, setPaused } from '../utils/serverMap'
 /**
  * Play a song from the queue.
  * @param {string} Discord.Message - The Discord Message object.
@@ -28,7 +28,7 @@ export const play = async (
         }
 
         if (serverInfo?.isPaused) {
-            serverInfo.isPaused = false
+            setPaused(message.guild.id, false)
             togglePause(message, serverInfo, false)
         }
 

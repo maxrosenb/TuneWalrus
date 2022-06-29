@@ -1,9 +1,9 @@
 import Discord from 'discord.js'
-import { ServerInfo } from '../types'
+import { deleteQueue } from '../utils/serverMap'
 
-export const emptyQueue = (message: Discord.Message, serverInfo: ServerInfo | undefined): void => {
-    if (serverInfo) {
-        serverInfo.songs = []
+export const emptyQueue = (message: Discord.Message): void => {
+    if (message.guild?.id) {
+        deleteQueue(message.guild.id)
     }
     const textChannel = message.channel as Discord.TextChannel
     textChannel.send('Queue Emptied.')

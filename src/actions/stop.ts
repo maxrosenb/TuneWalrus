@@ -1,6 +1,7 @@
 import Discord from 'discord.js'
 import { ServerInfo } from '../types'
 import { player } from '../utils/playThroughVoiceChannel'
+import { deleteQueue } from '../utils/serverMap'
 import { reset } from './reset'
 
 export const stop = (message: Discord.Message, serverInfo: ServerInfo | undefined): void => {
@@ -17,7 +18,9 @@ export const stop = (message: Discord.Message, serverInfo: ServerInfo | undefine
         return
     }
 
-    serverInfo.songs = []
+    if (message.guild?.id) {
+        deleteQueue(message.guild.id)
+    }
     player.stop()
     serverInfo.connection.disconnect()
     reset(message, serverInfo, false)

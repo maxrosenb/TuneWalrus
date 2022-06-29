@@ -1,6 +1,7 @@
 import Discord from 'discord.js'
 import { ServerInfo } from '../types'
 import { player } from '../utils/playThroughVoiceChannel'
+import { setPaused } from '../utils/serverMap'
 
 /**
  * Toggles the pause state of the player.
@@ -24,11 +25,13 @@ export const togglePause = (
         message.channel.send('There is no song that I could skip!')
         return
     }
-    if (!shouldPause || serverInfo.isPaused) {
-        player.unpause()
-        serverInfo.isPaused = false
-        return
+    if (message.guild?.id) {
+        if (!shouldPause || serverInfo.isPaused) {
+            player.unpause()
+            setPaused(message.guild.id, false)
+        } else {
+            player.pause()
+            setPaused(message.guild.id, false)
+        }
     }
-    player.pause()
-    serverInfo.isPaused = true
 }

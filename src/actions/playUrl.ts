@@ -7,7 +7,7 @@ import { skip } from './skip'
 import { togglePause } from './pause'
 import { getAudioFromUrl } from '../utils/getAudioFromUrl'
 import { possiblySendEmoji } from '../utils/sendEmoji'
-import { serverMap } from '../utils/serverMap'
+import { serverMap, setPaused } from '../utils/serverMap'
 
 let boingSound: ytdl.videoInfo
 let grocerySound: ytdl.videoInfo
@@ -62,8 +62,8 @@ export const playUrl = async (
     url: string
 ): Promise<void> => {
     try {
-        if (serverInfo?.isPaused) {
-            serverInfo.isPaused = false
+        if (serverInfo?.isPaused && message.guild?.id) {
+            setPaused(message.guild.id, false)
             togglePause(message, serverInfo, false)
             return
         }
