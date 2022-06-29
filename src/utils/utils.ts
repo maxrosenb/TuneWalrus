@@ -20,16 +20,18 @@ export const playThroughDiscord = (
 ): void => {
     const serverInfo = queue.get(guild.id)
 
-    if (!serverInfo?.connection) {
+    if (!serverInfo?.connection || !song?.url) {
         return
     }
 
     try {
+        console.log(song)
         player.play(createAudioResource(ytdl(song.url)))
         player.on(AudioPlayerStatus.Idle, () => {
             serverInfo.songs.shift()
             if (serverInfo.songs.length === 0 && serverInfo.connection) {
                 serverInfo.connection.disconnect()
+                queue.delete(guild.id)
             }
             playThroughDiscord(guild, serverInfo.songs[0], queue)
         })

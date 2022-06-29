@@ -89,13 +89,10 @@ export const play = async (
             message.channel.send(`**ASSERTING DOMINANCE**  ${someEmoji || ''}`)
             serverInfo.songs.splice(1, 0, song)
             skip(message, serverInfo, queue)
+        } else {
+            serverInfo.songs.push(song)
+            message.channel.send(`${song.title} has been added to the queue!`)
         }
-
-        serverInfo.songs.push(song)
-
-        playThroughDiscord(message.guild, serverInfo.songs[0], queue)
-
-        message.channel.send(`${song.title} has been added to the queue!`)
 
         return
     } catch (error) {

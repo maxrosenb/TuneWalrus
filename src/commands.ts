@@ -33,10 +33,12 @@ export const routeMessage = async (
 ): Promise<void> => {
     if (message.content.startsWith(`${PREFIX}play`)) {
         await play(message, serverInfo, queue)
+        return
     }
 
     if (message.content.startsWith(`${PREFIX}skip`)) {
         skip(message, serverInfo, queue)
+        return
     }
 
     if (
@@ -45,6 +47,7 @@ export const routeMessage = async (
         message.content.startsWith(`${PREFIX}ad`)
     ) {
         assertDominance(serverInfo, message, queue)
+        return
     }
 
     if (
@@ -54,18 +57,22 @@ export const routeMessage = async (
         message.content.startsWith(`${PREFIX}next`)
     ) {
         insertNext(serverInfo, message, queue)
+        return
     }
 
     if (message.content.startsWith(`${PREFIX}stop`)) {
         stop(message, serverInfo, queue, client)
+        return
     }
 
     if (message.content.startsWith(`${PREFIX}emptyqueue`)) {
         emptyQueue(serverInfo, message)
+        return
     }
 
     if (message.content.startsWith(`${PREFIX}god`)) {
         god(message)
+        return
     }
 
     if (
@@ -74,38 +81,47 @@ export const routeMessage = async (
         message.content.startsWith(`${PREFIX}list`)
     ) {
         listQueue(serverInfo, message)
+        return
     }
 
     if (message.content.startsWith(`${PREFIX}setvolume`)) {
         setVolume(serverInfo, message)
+        return
     }
 
     if (message.content.startsWith(`${PREFIX}help`)) {
         help(message)
+        return
     }
 
     if (message.content.startsWith(`${PREFIX}ဟိုင်း`)) {
         hello(message)
+        return
     }
 
     if (message.content.startsWith(`${PREFIX}reset`)) {
         reset(message, serverInfo, queue, client)
+        return
     }
 
     if (message.content.startsWith(`${PREFIX}current`)) {
         currentlyPlaying(serverInfo, message)
+        return
     }
 
     if (message.content.startsWith(`${PREFIX}pause`)) {
         togglePause(message, serverInfo)
+        return
     }
 
     if (message.content.startsWith(`${PREFIX}boing`)) {
         playUrl(message, serverInfo, queue, 'https://www.youtube.com/watch?v=d7vfbyFl5kc')
+        return
     }
 
     if (message.content.startsWith(`${PREFIX}grocery`)) {
         playUrl(message, serverInfo, queue, 'https://www.youtube.com/watch?v=GTsBU3RtF2c&t=766s')
+        return
     }
 
     if (
@@ -113,15 +129,17 @@ export const routeMessage = async (
         message.content.startsWith(`${PREFIX}scooby`)
     ) {
         playUrl(message, serverInfo, queue, 'https://www.youtube.com/watch?v=xW6UWCUMhNE')
+        return
     }
 
     if (message.content.startsWith(`${PREFIX}party`)) {
         playUrl(message, serverInfo, queue, 'https://www.youtube.com/watch?v=N4Db0oYKXvw')
+        return
     }
 
     if (message.content.startsWith(`${PREFIX}death`)) {
         playUrl(message, serverInfo, queue, 'https://www.youtube.com/watch?v=9Z1IGjr2cT0')
-    } else {
-        message.channel.send('You need to enter a valid command!')
+        return
     }
+    message.channel.send('You need to enter a valid command!')
 }

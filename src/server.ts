@@ -24,7 +24,10 @@ try {
     })
 
     client.on('messageCreate', async (message: Discord.Message): Promise<void> => {
-        if (message.author.bot || !message.content.startsWith(PREFIX) || !message.guild) return
+        if (message.author.bot || !message.content.startsWith(PREFIX) || !message.guild) {
+            return
+        }
+        console.log(message.content, message.author.bot)
 
         await routeMessage(message, queue.get(message.guild.id), queue, client)
     })

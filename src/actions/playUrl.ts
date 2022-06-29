@@ -123,8 +123,13 @@ export const playUrl = async (
             return
         }
 
-        serverInfo.songs.splice(1, 0, song)
-        skip(message, serverInfo, queue)
+        if (serverInfo.songs.length) {
+            serverInfo?.songs?.splice(1, 0, song)
+            skip(message, serverInfo, queue)
+        } else {
+            serverInfo.songs.push(song)
+            playThroughDiscord(message.guild, song, queue)
+        }
     } catch (error) {
         console.log(error)
     }
