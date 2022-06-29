@@ -6,40 +6,62 @@ import { playThroughDiscord } from '../utils/utils'
 import { skip } from './skip'
 import { togglePause } from './pause'
 
-const boingFunc = async () => {
-    const boingSound: ytdl.videoInfo = await ytdl.getInfo(
-        'https://www.youtube.com/watch?v=d7vfbyFl5kc' // BOING sound
+function possiblySendEmoji(
+    message: Discord.Message,
+    emojiName: string
+): Promise<Discord.Message<boolean>> | undefined {
+    return (
+        message.guild?.emojis?.cache.find((emoji) => emoji.name === emojiName) &&
+        message.channel.send(
+            `${message.guild?.emojis?.cache.find((emoji) => emoji.name === emojiName)}`
+        )
     )
-    return boingSound
 }
 
-const groceryFunc = async () => {
-    const grocerySound: ytdl.videoInfo = await ytdl.getInfo(
-        'https://www.youtube.com/watch?v=GTsBU3RtF2c&t=766s' // GROCERY sound
-    )
-    return grocerySound
-}
-
-const scoobyFunc = async () => {
-    const scoobySound: ytdl.videoInfo = await ytdl.getInfo(
-        'https://www.youtube.com/watch?v=xW6UWCUMhNE' // SCOOBY sound
-    )
-    return scoobySound
+const fetchSound = async (url: string) => {
+    const sound: ytdl.videoInfo = await ytdl.getInfo(url)
+    return sound
 }
 
 let boingSound: ytdl.videoInfo
 let grocerySound: ytdl.videoInfo
 let scoobySound: ytdl.videoInfo
 
-boingFunc().then((boing) => {
+async function getSong(url: string, author: string) {
+    let songInfo: ytdl.videoInfo
+
+    if (url === 'https://www.youtube.com/watch?v=d7vfbyFl5kc') {
+        songInfo = boingSound
+    }
+
+    if (url === 'https://www.youtube.com/watch?v=GTsBU3RtF2c&t=766s') {
+        songInfo = grocerySound
+    }
+
+    if (url === 'https://www.youtube.com/watch?v=xW6UWCUMhNE') {
+        songInfo = scoobySound
+    } else {
+        songInfo = await ytdl.getInfo(
+            url // BOING sound
+        )
+    }
+    const song: Song = {
+        title: songInfo.videoDetails.title,
+        url: songInfo.videoDetails.video_url,
+        userAddedBy: author,
+    }
+    return song
+}
+
+fetchSound('https://www.youtube.com/watch?v=d7vfbyFl5kc').then((boing) => {
     boingSound = boing
 })
 
-groceryFunc().then((grocery) => {
+fetchSound('https://www.youtube.com/watch?v=GTsBU3RtF2c&t=766s').then((grocery) => {
     grocerySound = grocery
 })
 
-scoobyFunc().then((scooby) => {
+fetchSound('https://www.youtube.com/watch?v=xW6UWCUMhNE').then((scooby) => {
     scoobySound = scooby
 })
 
@@ -62,12 +84,7 @@ export const playUrl = async (
             togglePause(message, serverInfo, false)
             return
         }
-        const someEmoji = message.guild?.emojis?.cache.find(
-            (emoji) => emoji.name === '2434pepebusiness'
-        )
-        if (someEmoji) {
-            message.channel.send(`${someEmoji}`)
-        }
+        possiblySendEmoji(message, '2434pepebusiness')
 
         if (
             !message.client.user ||
@@ -78,29 +95,7 @@ export const playUrl = async (
             return
         }
 
-        let songInfo: ytdl.videoInfo
-
-        if (url === 'https://www.youtube.com/watch?v=d7vfbyFl5kc') {
-            songInfo = boingSound
-        }
-
-        if (url === 'https://www.youtube.com/watch?v=GTsBU3RtF2c&t=766s') {
-            songInfo = grocerySound
-        }
-
-        if (url === 'https://www.youtube.com/watch?v=xW6UWCUMhNE') {
-            songInfo = scoobySound
-        } else {
-            songInfo = await ytdl.getInfo(
-                url // BOING sound
-            )
-        }
-
-        const song: Song = {
-            title: songInfo.videoDetails.title,
-            url: songInfo.videoDetails.video_url,
-            userAddedBy: message.author.username,
-        }
+        const song: Song = await getSong(url, message.author.username)
 
         if (!serverInfo) {
             const connection = joinVoiceChannel({

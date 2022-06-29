@@ -1,35 +1,23 @@
 import Discord from 'discord.js'
 import { PREFIX, TOKEN } from './config'
 import { routeMessage } from './commands'
-import { ServerInfo } from './types'
+import { serverMap } from './utils/serverMap'
+import { client } from './utils/client'
+
+if (!TOKEN) {
+    console.log('No token found. Please set TOKEN in config.ts')
+    process.exit(1)
+}
 
 try {
-    if (!TOKEN) {
-        console.log('No token found. Please set TOKEN in config.ts')
-        process.exit(1)
-    }
-
-    const client: Discord.Client = new Discord.Client({
-        intents: [
-            Discord.Intents.FLAGS.GUILDS,
-            Discord.Intents.FLAGS.GUILD_MESSAGES,
-            Discord.Intents.FLAGS.GUILD_VOICE_STATES,
-        ],
-    })
-
-    const serverMap = new Map<string, ServerInfo>()
-
     client.once('ready', (): void => {
         console.log('Ready!')
     })
 
     client.on('messageCreate', async (message: Discord.Message): Promise<void> => {
-        if (message.author.bot || !message.content.startsWith(PREFIX) || !message.guild) {
-            return
+        if (message.content.startsWith(PREFIX) && !message.author.bot && message.guild) {
+            await routeMessage(message, serverMap.get(message.guild.id), serverMap, client)
         }
-        console.log(message.content, message.author.bot)
-
-        await routeMessage(message, serverMap.get(message.guild.id), serverMap, client)
     })
 
     client.login(TOKEN)

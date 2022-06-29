@@ -2,11 +2,26 @@ import Discord from 'discord.js'
 import ytdl from 'ytdl-core'
 import { joinVoiceChannel } from '@discordjs/voice'
 import { togglePause } from './pause'
-import { Song, ServerInfo, YtdlResults } from '../types'
+import { Song, ServerInfo } from '../types'
 import { playThroughDiscord } from '../utils/utils'
 import { skip } from './skip'
 
 const youtubesearchapi = require('youtube-search-api')
+
+const getSong = async (userInput: string, message: Discord.Message<boolean>): Promise<Song> => {
+    const songInfo: ytdl.videoInfo = await ytdl.getInfo(
+        userInput.includes('https') // If the song is a url
+            ? userInput // then just use the url
+            : 'https://www.youtube.com/watch?v=' + // else use the youtube search api
+                  (await youtubesearchapi.GetListByKeyword(userInput, false, 1).items[0].id)
+    )
+
+    return {
+        title: songInfo.videoDetails.title,
+        url: songInfo.videoDetails.video_url,
+        userAddedBy: message.author.username,
+    }
+}
 
 /**
  * Play a song from the queue.
@@ -22,11 +37,6 @@ export const play = async (
     assertDominance: boolean = false
 ): Promise<void> => {
     try {
-        if (serverInfo?.isPaused) {
-            serverInfo.isPaused = false
-            togglePause(message, serverInfo, false)
-            return
-        }
         if (
             !message.client.user ||
             !message.guild ||
@@ -36,65 +46,48 @@ export const play = async (
             return
         }
 
-        const songInput: string = message.content.split(' ').slice(1).join(' ')
-
-        let linkToDownload
-        if (songInput.includes('https')) {
-            linkToDownload = songInput
-        } else {
-            const searchResults: YtdlResults = await youtubesearchapi.GetListByKeyword(
-                songInput,
-                false,
-                1
-            )
-            linkToDownload = `https://www.youtube.com/watch?v=${searchResults.items[0].id}`
+        if (serverInfo?.isPaused) {
+            serverInfo.isPaused = false
+            togglePause(message, serverInfo, false)
+            return
         }
 
-        const songInfo: ytdl.videoInfo = await ytdl.getInfo(linkToDownload)
-
-        const song: Song = {
-            title: songInfo.videoDetails.title,
-            url: songInfo.videoDetails.video_url,
-            userAddedBy: message.author.username,
-        }
+        const song: Song = await getSong(message.content.split(' ').slice(1).join(' '), message) // Get the song from the message
 
         if (!serverInfo) {
-            // If we've never seen this server before, add it to the Map
+            // If we've never seen this server before, add it to the Map before playing the song
 
-            const connection = joinVoiceChannel({
-                channelId: message.member.voice.channel.id,
-                guildId: message.guild.id,
-                adapterCreator: message.guild.voiceAdapterCreator,
-                selfDeaf: false,
-            })
-
-            const serverConstruct: ServerInfo = {
+            serverMap.set(message.guild?.id, {
                 textChannel: message.channel,
-                connection,
+                connection: joinVoiceChannel({
+                    channelId: message.member.voice.channel.id,
+                    guildId: message.guild.id,
+                    adapterCreator: message.guild.voiceAdapterCreator,
+                    selfDeaf: false,
+                }),
                 songs: [song],
                 volume: 5,
                 isPaused: false,
-            }
+            })
 
-            serverMap.set(message.guild?.id, serverConstruct)
-
-            playThroughDiscord(message.guild, serverConstruct.songs[0], serverMap)
+            playThroughDiscord(message.guild, song, serverMap)
             return
         }
 
         if (assertDominance) {
-            const someEmoji = message.guild?.emojis?.cache.find(
-                (emoji) => emoji.name === '2434pepebusiness'
+            message.channel.send(
+                `**ASSERTING DOMINANCE**  ${
+                    message.guild?.emojis?.cache.find(
+                        (emoji) => emoji.name === '2434pepebusiness'
+                    ) || ''
+                }`
             )
-            message.channel.send(`**ASSERTING DOMINANCE**  ${someEmoji || ''}`)
             serverInfo.songs.splice(1, 0, song)
             skip(message, serverInfo, serverMap)
         } else {
             serverInfo.songs.push(song)
             message.channel.send(`${song.title} has been added to the queue!`)
         }
-
-        return
     } catch (error) {
         console.log(error)
     }
