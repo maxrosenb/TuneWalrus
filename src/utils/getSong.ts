@@ -11,9 +11,11 @@ const youtubesearchapi = require('youtube-search-api')
  * @returns {Promise<Song>} The song object.
  */
 export const getSong = async (userInput: string, author: string): Promise<Song> => {
-    const x = youtubesearchapi.GetListByKeyword(userInput, false, 1).items[0].id
+    const videoId = await youtubesearchapi.GetListByKeyword(userInput, false, 1)
     const { videoDetails } = await ytdl.getInfo(
-        userInput.includes('https') ? userInput : 'https://www.youtube.com/watch?v=' + x
+        userInput.includes('https')
+            ? userInput
+            : 'https://www.youtube.com/watch?v=' + videoId.items[0].id
     )
     return {
         title: videoDetails.title,
