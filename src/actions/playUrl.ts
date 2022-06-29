@@ -5,29 +5,14 @@ import { Song, ServerInfo } from '../types'
 import { playThroughDiscord } from '../utils/utils'
 import { skip } from './skip'
 import { togglePause } from './pause'
-
-function possiblySendEmoji(
-    message: Discord.Message,
-    emojiName: string
-): Promise<Discord.Message<boolean>> | undefined {
-    return (
-        message.guild?.emojis?.cache.find((emoji) => emoji.name === emojiName) &&
-        message.channel.send(
-            `${message.guild?.emojis?.cache.find((emoji) => emoji.name === emojiName)}`
-        )
-    )
-}
-
-const fetchSound = async (url: string) => {
-    const sound: ytdl.videoInfo = await ytdl.getInfo(url)
-    return sound
-}
+import { getAudioFromUrl } from '../utils/getAudioFromUrl'
+import { possiblySendEmoji } from '../utils/sendEmoji'
 
 let boingSound: ytdl.videoInfo
 let grocerySound: ytdl.videoInfo
 let scoobySound: ytdl.videoInfo
 
-async function getSong(url: string, author: string) {
+async function getSoundInfo(url: string, author: string) {
     let songInfo: ytdl.videoInfo
 
     if (url === 'https://www.youtube.com/watch?v=d7vfbyFl5kc') {
@@ -41,9 +26,7 @@ async function getSong(url: string, author: string) {
     if (url === 'https://www.youtube.com/watch?v=xW6UWCUMhNE') {
         songInfo = scoobySound
     } else {
-        songInfo = await ytdl.getInfo(
-            url // BOING sound
-        )
+        songInfo = await ytdl.getInfo(url)
     }
     const song: Song = {
         title: songInfo.videoDetails.title,
@@ -53,15 +36,15 @@ async function getSong(url: string, author: string) {
     return song
 }
 
-fetchSound('https://www.youtube.com/watch?v=d7vfbyFl5kc').then((boing) => {
+getAudioFromUrl('https://www.youtube.com/watch?v=d7vfbyFl5kc').then((boing) => {
     boingSound = boing
 })
 
-fetchSound('https://www.youtube.com/watch?v=GTsBU3RtF2c&t=766s').then((grocery) => {
+getAudioFromUrl('https://www.youtube.com/watch?v=GTsBU3RtF2c&t=766s').then((grocery) => {
     grocerySound = grocery
 })
 
-fetchSound('https://www.youtube.com/watch?v=xW6UWCUMhNE').then((scooby) => {
+getAudioFromUrl('https://www.youtube.com/watch?v=xW6UWCUMhNE').then((scooby) => {
     scoobySound = scooby
 })
 
@@ -95,7 +78,7 @@ export const playUrl = async (
             return
         }
 
-        const song: Song = await getSong(url, message.author.username)
+        const song: Song = await getSoundInfo(url, message.author.username)
 
         if (!serverInfo) {
             const connection = joinVoiceChannel({

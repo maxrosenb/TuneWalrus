@@ -1,27 +1,10 @@
 import Discord from 'discord.js'
-import ytdl from 'ytdl-core'
 import { joinVoiceChannel } from '@discordjs/voice'
 import { togglePause } from './pause'
 import { Song, ServerInfo } from '../types'
 import { playThroughDiscord } from '../utils/utils'
 import { skip } from './skip'
-
-const youtubesearchapi = require('youtube-search-api')
-
-const getSong = async (userInput: string, message: Discord.Message<boolean>): Promise<Song> => {
-    const songInfo: ytdl.videoInfo = await ytdl.getInfo(
-        userInput.includes('https') // If the song is a url
-            ? userInput // then just use the url
-            : 'https://www.youtube.com/watch?v=' + // else use the youtube search api
-                  (await youtubesearchapi.GetListByKeyword(userInput, false, 1).items[0].id)
-    )
-
-    return {
-        title: songInfo.videoDetails.title,
-        url: songInfo.videoDetails.video_url,
-        userAddedBy: message.author.username,
-    }
-}
+import { getSong } from '../utils/getSong'
 
 /**
  * Play a song from the queue.
@@ -49,10 +32,12 @@ export const play = async (
         if (serverInfo?.isPaused) {
             serverInfo.isPaused = false
             togglePause(message, serverInfo, false)
-            return
         }
 
-        const song: Song = await getSong(message.content.split(' ').slice(1).join(' '), message) // Get the song from the message
+        const song: Song = await getSong(
+            message.content.split(' ').slice(1).join(' '),
+            message.author.username
+        ) // Get the song from the message
 
         if (!serverInfo) {
             // If we've never seen this server before, add it to the Map before playing the song
