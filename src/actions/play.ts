@@ -12,13 +12,13 @@ const youtubesearchapi = require('youtube-search-api')
  * Play a song from the queue.
  * @param {string} Discord.Message - The Discord Message object.
  * @param {ServerInfo} serverInfo - The server info object.
- * @param {Map<string, ServerInfo>} queue - The queue map.
+ * @param {Map<string, ServerInfo>} serverMap - The queue map.
  * @param {Discord.Client} client - The Discord client object.
  */
 export const play = async (
     message: Discord.Message,
     serverInfo: ServerInfo | undefined,
-    queue: Map<string, ServerInfo>,
+    serverMap: Map<string, ServerInfo>,
     assertDominance: boolean = false
 ): Promise<void> => {
     try {
@@ -76,9 +76,9 @@ export const play = async (
                 isPaused: false,
             }
 
-            queue.set(message.guild?.id, serverConstruct)
+            serverMap.set(message.guild?.id, serverConstruct)
 
-            playThroughDiscord(message.guild, serverConstruct.songs[0], queue)
+            playThroughDiscord(message.guild, serverConstruct.songs[0], serverMap)
             return
         }
 
@@ -88,7 +88,7 @@ export const play = async (
             )
             message.channel.send(`**ASSERTING DOMINANCE**  ${someEmoji || ''}`)
             serverInfo.songs.splice(1, 0, song)
-            skip(message, serverInfo, queue)
+            skip(message, serverInfo, serverMap)
         } else {
             serverInfo.songs.push(song)
             message.channel.send(`${song.title} has been added to the queue!`)

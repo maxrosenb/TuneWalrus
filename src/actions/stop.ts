@@ -6,7 +6,7 @@ import { reset } from './reset'
 export const stop = (
     message: Discord.Message,
     serverInfo: ServerInfo | undefined,
-    queue: Map<string, ServerInfo>,
+    serverMap: Map<string, ServerInfo>,
     client: Discord.Client
 ): void => {
     if (!serverInfo?.connection) {
@@ -25,5 +25,5 @@ export const stop = (
     serverInfo.songs = []
     player.stop()
     serverInfo.connection.disconnect()
-    reset(message, serverInfo, queue, client, false)
+    reset(message, serverInfo, serverMap, client, false)
 }

@@ -2,26 +2,33 @@ import Discord from 'discord.js'
 import { ServerInfo } from '../types'
 import { player } from '../utils/utils'
 
-const youtubesearchapi = require('youtube-search-api')
-
 /**
  * Resets the player if it has a problem
  * @param {Discord.Message} message - The Discord Message object
  * @param {ServerInfo} serverInfo - The server info object
- * @param {queue} Map<string, ServerInfo> - The queue map
- * @param {client} Discord.Client - The Discord client object
+ * @param {Map<string, ServerInfo>} serverMap - The serverMap map
+ * @param {Discord.Client} client - The Discord client object
  * @param {boolean}} withMessage - Whether or not to send a message
  */
 
 export const reset = async (
     message: Discord.Message,
     serverInfo: ServerInfo | undefined,
-    queue: Map<string, ServerInfo>,
+    serverMap: Map<string, ServerInfo>,
     client: Discord.Client,
     withMessage: boolean = true
 ): Promise<void> => {
     try {
         console.log('resetting')
+        if (
+            !message.client.user ||
+            !message.guild ||
+            !message.member?.voice.channel ||
+            !message.member?.voice.channel.permissionsFor(message.client.user) ||
+            !serverInfo
+        ) {
+            return
+        }
 
         if (withMessage) {
             const someEmoji: Discord.GuildEmoji | undefined = client.emojis.cache.find(
@@ -30,25 +37,17 @@ export const reset = async (
 
             if (someEmoji) {
                 message.channel.send(
-                    `Resetting... TuneWalrus is sorry to have failed you ` + `${someEmoji}`
+                    `Resetting... TuneWalrus is sorry to have failed you ${someEmoji}`
                 )
             } else {
-                message.channel.send(`Resetting... TuneWalrus is sorry to have failed you `)
+                message.channel.send('Resetting... TuneWalrus is sorry to have failed you')
             }
         }
-        if (
-            !message.client.user ||
-            !message.guild ||
-            !message.member?.voice.channel ||
-            !message.member?.voice.channel.permissionsFor(message.client.user) ||
-            !serverInfo
-        )
-            return
 
         player.stop()
         serverInfo.connection?.disconnect()
         serverInfo.connection = null
-        queue.delete(message.guild.id)
+        serverMap.delete(message.guild.id)
     } catch (err) {
         console.log(err)
     }

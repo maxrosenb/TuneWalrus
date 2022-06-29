@@ -21,23 +21,23 @@ import { insertNext } from './actions/assertBeta'
  * Routes a Discord message to the appropriate action
  * @param {Discord.Message} message - The Discord Message object
  * @param {ServerInfo | undefined} serverInfo - The server info object
- * @param {Map<string, ServerInfo>} queue - The queue map
+ * @param {Map<string, ServerInfo>} serverMap - The serverMap map
  * @param {Discord.Client} client - The Discord Client object
  */
 
 export const routeMessage = async (
     message: Discord.Message,
     serverInfo: ServerInfo | undefined,
-    queue: Map<string, ServerInfo>,
+    serverMap: Map<string, ServerInfo>,
     client: Discord.Client
 ): Promise<void> => {
     if (message.content.startsWith(`${PREFIX}play`)) {
-        await play(message, serverInfo, queue)
+        await play(message, serverInfo, serverMap)
         return
     }
 
     if (message.content.startsWith(`${PREFIX}skip`)) {
-        skip(message, serverInfo, queue)
+        skip(message, serverInfo, serverMap)
         return
     }
 
@@ -46,7 +46,7 @@ export const routeMessage = async (
         message.content.startsWith(`${PREFIX}assert`) ||
         message.content.startsWith(`${PREFIX}ad`)
     ) {
-        assertDominance(serverInfo, message, queue)
+        assertDominance(serverInfo, message, serverMap)
         return
     }
 
@@ -56,12 +56,12 @@ export const routeMessage = async (
         message.content.startsWith(`${PREFIX}ab`) ||
         message.content.startsWith(`${PREFIX}next`)
     ) {
-        insertNext(serverInfo, message, queue)
+        insertNext(serverInfo, message, serverMap)
         return
     }
 
     if (message.content.startsWith(`${PREFIX}stop`)) {
-        stop(message, serverInfo, queue, client)
+        stop(message, serverInfo, serverMap, client)
         return
     }
 
@@ -100,7 +100,7 @@ export const routeMessage = async (
     }
 
     if (message.content.startsWith(`${PREFIX}reset`)) {
-        reset(message, serverInfo, queue, client)
+        reset(message, serverInfo, serverMap, client)
         return
     }
 
@@ -115,12 +115,17 @@ export const routeMessage = async (
     }
 
     if (message.content.startsWith(`${PREFIX}boing`)) {
-        playUrl(message, serverInfo, queue, 'https://www.youtube.com/watch?v=d7vfbyFl5kc')
+        playUrl(message, serverInfo, serverMap, 'https://www.youtube.com/watch?v=d7vfbyFl5kc')
         return
     }
 
     if (message.content.startsWith(`${PREFIX}grocery`)) {
-        playUrl(message, serverInfo, queue, 'https://www.youtube.com/watch?v=GTsBU3RtF2c&t=766s')
+        playUrl(
+            message,
+            serverInfo,
+            serverMap,
+            'https://www.youtube.com/watch?v=GTsBU3RtF2c&t=766s'
+        )
         return
     }
 
@@ -128,17 +133,17 @@ export const routeMessage = async (
         message.content.startsWith(`${PREFIX}scoob`) ||
         message.content.startsWith(`${PREFIX}scooby`)
     ) {
-        playUrl(message, serverInfo, queue, 'https://www.youtube.com/watch?v=xW6UWCUMhNE')
+        playUrl(message, serverInfo, serverMap, 'https://www.youtube.com/watch?v=xW6UWCUMhNE')
         return
     }
 
     if (message.content.startsWith(`${PREFIX}party`)) {
-        playUrl(message, serverInfo, queue, 'https://www.youtube.com/watch?v=N4Db0oYKXvw')
+        playUrl(message, serverInfo, serverMap, 'https://www.youtube.com/watch?v=N4Db0oYKXvw')
         return
     }
 
     if (message.content.startsWith(`${PREFIX}death`)) {
-        playUrl(message, serverInfo, queue, 'https://www.youtube.com/watch?v=9Z1IGjr2cT0')
+        playUrl(message, serverInfo, serverMap, 'https://www.youtube.com/watch?v=9Z1IGjr2cT0')
         return
     }
     message.channel.send('You need to enter a valid command!')

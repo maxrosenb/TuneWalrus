@@ -17,7 +17,7 @@ try {
         ],
     })
 
-    const queue = new Map<string, ServerInfo>()
+    const serverMap = new Map<string, ServerInfo>()
 
     client.once('ready', (): void => {
         console.log('Ready!')
@@ -29,7 +29,7 @@ try {
         }
         console.log(message.content, message.author.bot)
 
-        await routeMessage(message, queue.get(message.guild.id), queue, client)
+        await routeMessage(message, serverMap.get(message.guild.id), serverMap, client)
     })
 
     client.login(TOKEN)

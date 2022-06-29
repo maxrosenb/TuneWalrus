@@ -47,13 +47,13 @@ scoobyFunc().then((scooby) => {
  * Play a song from a url
  * @param {string} Discord.Message - The Discord Message object
  * @param {ServerInfo} serverInfo - The server info object
- * @param {Map<string, ServerInfo>} queue - The queue map
+ * @param {Map<string, ServerInfo>} serverMap - The serverMap map
  * @param {string} url - The url to play
  */
 export const playUrl = async (
     message: Discord.Message,
     serverInfo: ServerInfo | undefined,
-    queue: Map<string, ServerInfo>,
+    serverMap: Map<string, ServerInfo>,
     url: string
 ): Promise<void> => {
     try {
@@ -118,17 +118,17 @@ export const playUrl = async (
                 isPaused: false,
             }
 
-            queue.set(message.guild?.id, serverConstruct)
-            playThroughDiscord(message.guild, serverConstruct.songs[0], queue)
+            serverMap.set(message.guild?.id, serverConstruct)
+            playThroughDiscord(message.guild, serverConstruct.songs[0], serverMap)
             return
         }
 
         if (serverInfo.songs.length) {
             serverInfo?.songs?.splice(1, 0, song)
-            skip(message, serverInfo, queue)
+            skip(message, serverInfo, serverMap)
         } else {
             serverInfo.songs.push(song)
-            playThroughDiscord(message.guild, song, queue)
+            playThroughDiscord(message.guild, song, serverMap)
         }
     } catch (error) {
         console.log(error)

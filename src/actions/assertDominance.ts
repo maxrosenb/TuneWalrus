@@ -5,14 +5,14 @@ import { play } from './play'
 export const assertDominance = (
     serverInfo: ServerInfo | undefined,
     message: Discord.Message,
-    queue: Map<string, ServerInfo>
+    serverMap: Map<string, ServerInfo>
 ) => {
     if (!serverInfo) {
         return
     }
     if (serverInfo.songs.length) {
-        play(message, serverInfo, queue, true)
+        play(message, serverInfo, serverMap, true)
     } else {
-        play(message, serverInfo, queue, false)
+        play(message, serverInfo, serverMap, false)
     }
 }
