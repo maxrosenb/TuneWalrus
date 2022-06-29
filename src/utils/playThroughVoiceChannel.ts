@@ -8,12 +8,10 @@ const { createAudioPlayer, createAudioResource, AudioPlayerStatus } = require('@
 export const player = createAudioPlayer()
 
 /**
- * Play a song through a voice channe via the Discord API
+ * Play a song through a voice channel via the Discord API
  * @param {Discord.Guild} guild - The Discord Guild object
  * @param {Song} song - The song to play
- * @param {Map<string, ServerInfo>} serverMap - The serverMap map
  */
-
 export const playThroughVC = (guild: Discord.Guild, song: Song): void => {
     const serverInfo = serverMap.get(guild.id)
 

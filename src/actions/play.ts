@@ -40,7 +40,7 @@ export const play = async (
         if (!serverInfo) {
             // If we've never seen this server before, add it to the Map before playing the song
 
-            serverMap.set(message.guild?.id, {
+            serverMap.set(message.guild.id, {
                 textChannel: message.channel,
                 connection: joinVoiceChannel({
                     channelId: message.member.voice.channel.id,

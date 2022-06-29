@@ -92,7 +92,6 @@ export const playUrl = async (
                 textChannel: message.channel,
                 connection,
                 songs: [song],
-                volume: 5,
                 isPaused: false,
             }
 

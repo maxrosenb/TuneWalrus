@@ -19,3 +19,5 @@ export type ServerInfo = {
     songs: Song[]
     isPaused: boolean
 }
+
+export type YtdlResults = { items: { id: string }[] }
