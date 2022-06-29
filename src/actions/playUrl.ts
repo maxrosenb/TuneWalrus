@@ -2,11 +2,12 @@ import Discord from 'discord.js'
 import ytdl from 'ytdl-core'
 import { joinVoiceChannel } from '@discordjs/voice'
 import { Song, ServerInfo } from '../types'
-import { playThroughDiscord } from '../utils/utils'
+import { playThroughVC } from '../utils/playThroughVoiceChannel'
 import { skip } from './skip'
 import { togglePause } from './pause'
 import { getAudioFromUrl } from '../utils/getAudioFromUrl'
 import { possiblySendEmoji } from '../utils/sendEmoji'
+import { serverMap } from '../utils/serverMap'
 
 let boingSound: ytdl.videoInfo
 let grocerySound: ytdl.videoInfo
@@ -58,7 +59,6 @@ getAudioFromUrl('https://www.youtube.com/watch?v=xW6UWCUMhNE').then((scooby) => 
 export const playUrl = async (
     message: Discord.Message,
     serverInfo: ServerInfo | undefined,
-    serverMap: Map<string, ServerInfo>,
     url: string
 ): Promise<void> => {
     try {
@@ -97,16 +97,16 @@ export const playUrl = async (
             }
 
             serverMap.set(message.guild?.id, serverConstruct)
-            playThroughDiscord(message.guild, serverConstruct.songs[0], serverMap)
+            playThroughVC(message.guild, serverConstruct.songs[0])
             return
         }
 
         if (serverInfo.songs.length) {
             serverInfo?.songs?.splice(1, 0, song)
-            skip(message, serverInfo, serverMap)
+            skip(message, serverInfo)
         } else {
             serverInfo.songs.push(song)
-            playThroughDiscord(message.guild, song, serverMap)
+            playThroughVC(message.guild, song)
         }
     } catch (error) {
         console.log(error)

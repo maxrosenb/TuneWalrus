@@ -5,7 +5,6 @@ import { play } from './actions/play'
 import { stop } from './actions/stop'
 import { skip } from './actions/skip'
 import { emptyQueue } from './actions/emptyQueue'
-import { setVolume } from './actions/setVolume'
 import { listQueue } from './actions/listQueue'
 import { assertDominance } from './actions/assertDominance'
 import { god } from './actions/god'
@@ -16,28 +15,25 @@ import { currentlyPlaying } from './actions/currentPlaying'
 import { togglePause } from './actions/pause'
 import { playUrl } from './actions/playUrl'
 import { insertNext } from './actions/assertBeta'
+import { serverMap } from './utils/serverMap'
 
 /**
  * Routes a Discord message to the appropriate action
  * @param {Discord.Message} message - The Discord Message object
- * @param {ServerInfo | undefined} serverInfo - The server info object
- * @param {Map<string, ServerInfo>} serverMap - The serverMap map
- * @param {Discord.Client} client - The Discord Client object
  */
+export const routeMessage = async (message: Discord.Message): Promise<void> => {
+    if (!message.guild) {
+        return
+    }
+    const serverInfo: ServerInfo | undefined = serverMap.get(message?.guild?.id)
 
-export const routeMessage = async (
-    message: Discord.Message,
-    serverInfo: ServerInfo | undefined,
-    serverMap: Map<string, ServerInfo>,
-    client: Discord.Client
-): Promise<void> => {
     if (message.content.startsWith(`${PREFIX}play`)) {
-        await play(message, serverInfo, serverMap)
+        await play(message, serverInfo)
         return
     }
 
     if (message.content.startsWith(`${PREFIX}skip`)) {
-        skip(message, serverInfo, serverMap)
+        skip(message, serverInfo)
         return
     }
 
@@ -46,7 +42,7 @@ export const routeMessage = async (
         message.content.startsWith(`${PREFIX}assert`) ||
         message.content.startsWith(`${PREFIX}ad`)
     ) {
-        assertDominance(serverInfo, message, serverMap)
+        assertDominance(message, serverInfo)
         return
     }
 
@@ -56,17 +52,17 @@ export const routeMessage = async (
         message.content.startsWith(`${PREFIX}ab`) ||
         message.content.startsWith(`${PREFIX}next`)
     ) {
-        insertNext(serverInfo, message, serverMap)
+        insertNext(message, serverInfo)
         return
     }
 
     if (message.content.startsWith(`${PREFIX}stop`)) {
-        stop(message, serverInfo, serverMap, client)
+        stop(message, serverInfo)
         return
     }
 
     if (message.content.startsWith(`${PREFIX}emptyqueue`)) {
-        emptyQueue(serverInfo, message)
+        emptyQueue(message, serverInfo)
         return
     }
 
@@ -80,12 +76,7 @@ export const routeMessage = async (
         message.content.startsWith(`${PREFIX}queue`) ||
         message.content.startsWith(`${PREFIX}list`)
     ) {
-        listQueue(serverInfo, message)
-        return
-    }
-
-    if (message.content.startsWith(`${PREFIX}setvolume`)) {
-        setVolume(serverInfo, message)
+        listQueue(message, serverInfo)
         return
     }
 
@@ -100,12 +91,12 @@ export const routeMessage = async (
     }
 
     if (message.content.startsWith(`${PREFIX}reset`)) {
-        reset(message, serverInfo, serverMap, client)
+        reset(message, serverInfo)
         return
     }
 
     if (message.content.startsWith(`${PREFIX}current`)) {
-        currentlyPlaying(serverInfo, message)
+        currentlyPlaying(message, serverInfo)
         return
     }
 
@@ -115,17 +106,12 @@ export const routeMessage = async (
     }
 
     if (message.content.startsWith(`${PREFIX}boing`)) {
-        playUrl(message, serverInfo, serverMap, 'https://www.youtube.com/watch?v=d7vfbyFl5kc')
+        playUrl(message, serverInfo, 'https://www.youtube.com/watch?v=d7vfbyFl5kc')
         return
     }
 
     if (message.content.startsWith(`${PREFIX}grocery`)) {
-        playUrl(
-            message,
-            serverInfo,
-            serverMap,
-            'https://www.youtube.com/watch?v=GTsBU3RtF2c&t=766s'
-        )
+        playUrl(message, serverInfo, 'https://www.youtube.com/watch?v=GTsBU3RtF2c&t=766s')
         return
     }
 
@@ -133,17 +119,17 @@ export const routeMessage = async (
         message.content.startsWith(`${PREFIX}scoob`) ||
         message.content.startsWith(`${PREFIX}scooby`)
     ) {
-        playUrl(message, serverInfo, serverMap, 'https://www.youtube.com/watch?v=xW6UWCUMhNE')
+        playUrl(message, serverInfo, 'https://www.youtube.com/watch?v=xW6UWCUMhNE')
         return
     }
 
     if (message.content.startsWith(`${PREFIX}party`)) {
-        playUrl(message, serverInfo, serverMap, 'https://www.youtube.com/watch?v=N4Db0oYKXvw')
+        playUrl(message, serverInfo, 'https://www.youtube.com/watch?v=N4Db0oYKXvw')
         return
     }
 
     if (message.content.startsWith(`${PREFIX}death`)) {
-        playUrl(message, serverInfo, serverMap, 'https://www.youtube.com/watch?v=9Z1IGjr2cT0')
+        playUrl(message, serverInfo, 'https://www.youtube.com/watch?v=9Z1IGjr2cT0')
         return
     }
     message.channel.send('You need to enter a valid command!')

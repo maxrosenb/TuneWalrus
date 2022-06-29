@@ -1,7 +1,7 @@
 import Discord from 'discord.js'
 import { ServerInfo, Song } from '../types'
 
-export const listQueue = (serverInfo: ServerInfo | undefined, message: Discord.Message) => {
+export const listQueue = (message: Discord.Message, serverInfo: ServerInfo | undefined) => {
     if (!serverInfo) {
         return
     }

@@ -1,6 +1,6 @@
 import Discord from 'discord.js'
 import { ServerInfo } from '../types'
-import { playThroughDiscord } from '../utils/utils'
+import { playThroughVC } from '../utils/playThroughVoiceChannel'
 
 /**
  * Skip a song
@@ -8,11 +8,7 @@ import { playThroughDiscord } from '../utils/utils'
  * @param {ServerInfo} serverInfo - The server info object
  * @param {Map<string, ServerInfo>} serverMap - The serverMap map
  */
-export const skip = (
-    message: Discord.Message,
-    serverInfo: ServerInfo | undefined,
-    serverMap: Map<string, ServerInfo>
-): void => {
+export const skip = (message: Discord.Message, serverInfo: ServerInfo | undefined): void => {
     if (!serverInfo?.connection || !message.guild) {
         return
     }
@@ -25,5 +21,5 @@ export const skip = (
         return
     }
     serverInfo.songs.shift()
-    playThroughDiscord(message.guild, serverInfo.songs[0], serverMap)
+    playThroughVC(message.guild, serverInfo.songs[0])
 }

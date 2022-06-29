@@ -5,16 +5,12 @@ import { Song, ServerInfo, YtdlResults } from '../types'
 
 const youtubesearchapi = require('youtube-search-api')
 
-export const insertNext = async (
-    serverInfo: ServerInfo | undefined,
-    message: Discord.Message,
-    queue: Map<string, ServerInfo>
-) => {
+export const insertNext = async (message: Discord.Message, serverInfo: ServerInfo | undefined) => {
     if (!serverInfo) {
         return
     }
     if (!serverInfo.songs.length) {
-        play(message, serverInfo, queue, false)
+        play(message, serverInfo, false)
     } else {
         if (
             !message.client.user ||

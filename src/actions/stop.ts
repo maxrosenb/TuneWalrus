@@ -1,14 +1,9 @@
 import Discord from 'discord.js'
 import { ServerInfo } from '../types'
-import { player } from '../utils/utils'
+import { player } from '../utils/playThroughVoiceChannel'
 import { reset } from './reset'
 
-export const stop = (
-    message: Discord.Message,
-    serverInfo: ServerInfo | undefined,
-    serverMap: Map<string, ServerInfo>,
-    client: Discord.Client
-): void => {
+export const stop = (message: Discord.Message, serverInfo: ServerInfo | undefined): void => {
     if (!serverInfo?.connection) {
         return
     }
@@ -25,5 +20,5 @@ export const stop = (
     serverInfo.songs = []
     player.stop()
     serverInfo.connection.disconnect()
-    reset(message, serverInfo, serverMap, client, false)
+    reset(message, serverInfo, false)
 }

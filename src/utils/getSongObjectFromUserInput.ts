@@ -10,7 +10,10 @@ const youtubesearchapi = require('youtube-search-api')
  * @param {string} author - Message author.
  * @returns {Promise<Song>} The song object.
  */
-export const getSong = async (userInput: string, author: string): Promise<Song> => {
+export const getSongObjectFromUserInput = async (
+    userInput: string,
+    author: string
+): Promise<Song> => {
     const videoId = await youtubesearchapi.GetListByKeyword(userInput, false, 1)
     const { videoDetails } = await ytdl.getInfo(
         userInput.includes('https')

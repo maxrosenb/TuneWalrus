@@ -2,21 +2,19 @@ import Discord from 'discord.js'
 import { joinVoiceChannel } from '@discordjs/voice'
 import { togglePause } from './pause'
 import { Song, ServerInfo } from '../types'
-import { playThroughDiscord } from '../utils/utils'
+import { playThroughVC } from '../utils/playThroughVoiceChannel'
 import { skip } from './skip'
-import { getSong } from '../utils/getSong'
-
+import { getSongObjectFromUserInput } from '../utils/getSongObjectFromUserInput'
+import { serverMap } from '../utils/serverMap'
 /**
  * Play a song from the queue.
  * @param {string} Discord.Message - The Discord Message object.
  * @param {ServerInfo} serverInfo - The server info object.
- * @param {Map<string, ServerInfo>} serverMap - The queue map.
  * @param {Discord.Client} client - The Discord client object.
  */
 export const play = async (
     message: Discord.Message,
     serverInfo: ServerInfo | undefined,
-    serverMap: Map<string, ServerInfo>,
     assertDominance: boolean = false
 ): Promise<void> => {
     try {
@@ -34,7 +32,7 @@ export const play = async (
             togglePause(message, serverInfo, false)
         }
 
-        const song: Song = await getSong(
+        const song: Song = await getSongObjectFromUserInput(
             message.content.split(' ').slice(1).join(' '),
             message.author.username
         ) // Get the song from the message
@@ -51,11 +49,10 @@ export const play = async (
                     selfDeaf: false,
                 }),
                 songs: [song],
-                volume: 5,
                 isPaused: false,
             })
 
-            playThroughDiscord(message.guild, song, serverMap)
+            playThroughVC(message.guild, song)
             return
         }
 
@@ -68,9 +65,12 @@ export const play = async (
                 }`
             )
             serverInfo.songs.splice(1, 0, song)
-            skip(message, serverInfo, serverMap)
+            skip(message, serverInfo)
         } else {
             serverInfo.songs.push(song)
+            if (serverInfo.songs.length === 1) {
+                playThroughVC(message.guild, song)
+            }
             message.channel.send(`${song.title} has been added to the queue!`)
         }
     } catch (error) {

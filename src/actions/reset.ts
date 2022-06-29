@@ -1,7 +1,8 @@
 import Discord from 'discord.js'
 import { ServerInfo } from '../types'
-import { player } from '../utils/utils'
-
+import { player } from '../utils/playThroughVoiceChannel'
+import { serverMap } from '../utils/serverMap'
+import { client } from '../utils/client'
 /**
  * Resets the player if it has a problem
  * @param {Discord.Message} message - The Discord Message object
@@ -14,39 +15,28 @@ import { player } from '../utils/utils'
 export const reset = async (
     message: Discord.Message,
     serverInfo: ServerInfo | undefined,
-    serverMap: Map<string, ServerInfo>,
-    client: Discord.Client,
     withMessage: boolean = true
 ): Promise<void> => {
     try {
         console.log('resetting')
         if (
-            !message.client.user ||
             !message.guild ||
-            !message.member?.voice.channel ||
-            !message.member?.voice.channel.permissionsFor(message.client.user) ||
-            !serverInfo
+            !message.client.user ||
+            !message.member?.voice?.channel?.permissionsFor(message.client.user)
         ) {
             return
         }
 
         if (withMessage) {
-            const someEmoji: Discord.GuildEmoji | undefined = client.emojis.cache.find(
-                (emoji) => emoji.name === '6757_Sadge'
+            message.channel.send(
+                `Resetting... TuneWalrus is sorry to have failed you ${
+                    client.emojis.cache.find((emoji) => emoji.name === '6757_Sadge') || ''
+                }`
             )
-
-            if (someEmoji) {
-                message.channel.send(
-                    `Resetting... TuneWalrus is sorry to have failed you ${someEmoji}`
-                )
-            } else {
-                message.channel.send('Resetting... TuneWalrus is sorry to have failed you')
-            }
         }
 
         player.stop()
-        serverInfo.connection?.disconnect()
-        serverInfo.connection = null
+        serverInfo?.connection?.disconnect()
         serverMap.delete(message.guild.id)
     } catch (err) {
         console.log(err)

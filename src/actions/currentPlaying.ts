@@ -2,8 +2,8 @@ import Discord from 'discord.js'
 import { ServerInfo } from '../types'
 
 export const currentlyPlaying = (
-    serverInfo: ServerInfo | undefined,
-    message: Discord.Message
+    message: Discord.Message,
+    serverInfo: ServerInfo | undefined
 ): void => {
     if (!serverInfo) {
         return

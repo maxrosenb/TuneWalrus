@@ -1,6 +1,7 @@
 import Discord from 'discord.js'
 import ytdl from 'ytdl-core'
-import { ServerInfo, Song } from '../types'
+import { Song } from '../types'
+import { serverMap } from './serverMap'
 
 const { createAudioPlayer, createAudioResource, AudioPlayerStatus } = require('@discordjs/voice')
 
@@ -13,13 +14,7 @@ export const player = createAudioPlayer()
  * @param {Map<string, ServerInfo>} serverMap - The serverMap map
  */
 
-export const playThroughDiscord = (
-    guild: Discord.Guild,
-    song: Song,
-    serverMap: Map<string, ServerInfo>
-    // serverMap is called queue in the code most places, but it should be called serverMap.
-    // TODO: Fix this
-): void => {
+export const playThroughVC = (guild: Discord.Guild, song: Song): void => {
     const serverInfo = serverMap.get(guild.id)
 
     if (!serverInfo?.connection || !song?.url) {
@@ -39,7 +34,7 @@ export const playThroughDiscord = (
                 serverMap.delete(guild.id)
             }
             // If the queue is not empty, play the next song.
-            playThroughDiscord(guild, serverInfo.songs[0], serverMap)
+            playThroughVC(guild, serverInfo.songs[0])
         })
 
         serverInfo.connection.subscribe(player)

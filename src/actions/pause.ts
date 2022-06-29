@@ -1,6 +1,6 @@
 import Discord from 'discord.js'
 import { ServerInfo } from '../types'
-import { player } from '../utils/utils'
+import { player } from '../utils/playThroughVoiceChannel'
 
 /**
  * Toggles the pause state of the player.
