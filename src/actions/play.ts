@@ -2,9 +2,8 @@ import { joinVoiceChannel } from '@discordjs/voice'
 import Discord from 'discord.js'
 import { ServerInfo, Song } from '../types'
 import { getSongObjectFromUserInput } from '../utils/getSongObjectFromUserInput'
-import { playSongThroughVoiceAndLoopQueue } from '../utils/player'
+import { playSongThroughVoiceAndLoopQueue, togglePause } from '../utils/player'
 import { setNewServerInfo } from '../utils/serverMap'
-import { togglePause } from './pause'
 import { skip } from './skip'
 
 /**

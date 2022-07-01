@@ -1,8 +1,13 @@
 import Discord from 'discord.js'
-import { createAudioResource, AudioPlayerStatus, createAudioPlayer } from '@discordjs/voice'
+import {
+  createAudioResource,
+  AudioPlayerStatus,
+  createAudioPlayer,
+  PlayerSubscription,
+} from '@discordjs/voice'
 import ytdl from 'ytdl-core'
-import { Song } from '../types'
-import { deleteServerInfo, serverMap } from './serverMap'
+import { ServerInfo, Song } from '../types'
+import { deleteServerInfo, serverMap, setPaused } from './serverMap'
 
 export const player = createAudioPlayer()
 
@@ -15,9 +20,11 @@ export const player = createAudioPlayer()
 export const playSongThroughVoiceAndLoopQueue = ({
   song,
   guild,
+  subscription,
 }: {
   guild: Discord.Guild
   song: Song
+  subscription?: PlayerSubscription
 }): void => {
   const { connection, songs, textChannel } = serverMap.get(guild.id) || {
     connection: null,
@@ -29,8 +36,15 @@ export const playSongThroughVoiceAndLoopQueue = ({
     return
   }
   try {
+    // if (subscription) {
+    //   console.log('subscription found')
+    //   subscription.unsubscribe()
+    // }
+    const sub = subscription || connection.subscribe(player)
     player.play(createAudioResource(ytdl(song.url)))
     player.on(AudioPlayerStatus.Idle, () => {
+      console.log(`song finished: ${songs[0].title}`)
+      player.removeAllListeners()
       // on song end
       songs.shift() // remove the song that just played from the queue
       if (!songs.length) {
@@ -41,11 +55,38 @@ export const playSongThroughVoiceAndLoopQueue = ({
         return
       }
       // If the queue is not empty, play the next song.
-      playSongThroughVoiceAndLoopQueue({ guild, song: songs[0] })
+      playSongThroughVoiceAndLoopQueue({ guild, song: songs[0], subscription: sub })
     })
-    connection.subscribe(player)
+
     textChannel.send(`Now playing: **${song.title}**`)
   } catch (error) {
     console.log(error)
+  }
+}
+
+export const togglePause = (
+  message: Discord.Message,
+  serverInfo: ServerInfo | undefined,
+  shouldPause: boolean = true
+): void => {
+  if (!serverInfo) {
+    return
+  }
+  if (!message.member?.voice.channel) {
+    message.channel.send('You have to be in a voice channel to pause the music!')
+    return
+  }
+  if (!serverInfo) {
+    message.channel.send('There is no song that I could skip!')
+    return
+  }
+  if (message.guild?.id) {
+    if (!shouldPause || serverInfo.isPaused) {
+      player.unpause()
+      setPaused({ guildId: message.guild.id, newPausedState: false })
+    } else {
+      player.pause()
+      setPaused({ guildId: message.guild.id, newPausedState: false })
+    }
   }
 }
