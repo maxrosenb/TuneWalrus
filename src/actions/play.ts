@@ -10,7 +10,7 @@ import { skip } from './skip'
  * Play a song from the queue.
  * @param {Discord.Message} message - The Discord Message object.
  * @param {ServerInfo} serverInfo - The server info object.
- * @param {boolean} assertDominance - The Discord client object.
+ * @param {boolean} assertDominance - Whether to play this song immediately
  */
 export const play = async ({
   message,
@@ -64,6 +64,7 @@ export const play = async ({
     }
 
     if (assertDominance) {
+      // Play song immediately
       channel.send(
         `**ASSERTING DOMINANCE**  ${
           guild?.emojis?.cache.find((emoji) => emoji.name === '2434pepebusiness') || ''
@@ -72,6 +73,7 @@ export const play = async ({
       songs.splice(1, 0, song)
       skip({ message, serverInfo })
     } else {
+      // Otherwise just add it to the queue
       songs.push(song)
       if (songs.length === 1) {
         playSongThroughVoiceAndLoopQueue({ guild, song })

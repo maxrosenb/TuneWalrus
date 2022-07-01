@@ -1,7 +1,7 @@
 import Discord from 'discord.js'
 import { getSongObjectFromUserInput } from '../utils/getSongObjectFromUserInput'
 import { routeMessage } from '../routeMessage'
-// import { playUrl } from '../actions/playUrl'
+import { possiblySendEmoji } from '../utils/sendEmoji'
 
 describe('Getting a song from user input retrieves the correct youtube video', () => {
   test('Gets a song from user input consisting of words', async () => {
@@ -30,27 +30,24 @@ describe('Getting a song from user input retrieves the correct youtube video', (
 })
 
 describe('Message Handler', () => {
-  const message = {
-    channel: {
-      send: jest.fn(),
-    },
-    content: '',
-    author: {
-      bot: false,
-    },
-    guild: '123',
-  } as unknown as Discord.Message
+  let message: Discord.Message
 
   beforeEach(() => {
     jest.clearAllMocks()
-  })
-
-  it('it should send God message!', async () => {
-    message.content = '!god'
-    await routeMessage(message)
-    expect(message.channel.send).toHaveBeenCalledWith(
-      'TuneWalrus is love. TuneWalrus is life. Accept TuneWalrus into yours and live happily for the rest of your days.'
-    )
+    message = {
+      channel: {
+        send: jest.fn(),
+      },
+      content: '',
+      author: {
+        username: 'mangoINGP',
+        bot: false,
+      },
+      guild: '123',
+      client: {
+        user: 'MangoINGP',
+      },
+    } as unknown as Discord.Message
   })
 
   it('should send Help Command', async () => {
@@ -70,6 +67,21 @@ describe('Message Handler', () => {
     )
   })
 
+  it('it should send ack message', async () => {
+    message.content = '!god'
+    await routeMessage(message)
+    expect(message.channel.send).toHaveBeenCalledWith(
+      'TuneWalrus is love. TuneWalrus is life. Accept TuneWalrus into yours and live happily for the rest of your days.'
+    )
+  })
+
+  it('Should not play song if not connected to voice chat', async () => {
+    message.content = '!play baby justin bieber'
+    await routeMessage(message)
+    expect(message.channel.send).toHaveBeenCalledTimes(1)
+    expect(message.channel.send).toHaveBeenCalledWith('TuneWalrus had a problem playing this song')
+  })
+
   it('should throw an error when a bot sends a message', async () => {
     message.author.bot = true
     try {
@@ -80,10 +92,27 @@ describe('Message Handler', () => {
     }
   })
   it('should not call any channel.send()', async () => {
-    message.author.bot = false
     message.content = '!random'
     await routeMessage(message)
     expect(message.channel.send).toHaveBeenCalledWith('Command not found.')
     expect(message.channel.send).toHaveBeenCalledTimes(1)
   })
+})
+
+test('Sending an emoji', async () => {
+  const message = {
+    channel: {
+      send: jest.fn(),
+    },
+    content: '',
+    author: {
+      bot: false,
+    },
+    guild: '123',
+    client: {
+      user: 'MangoINGP',
+    },
+  }
+  possiblySendEmoji(message as unknown as Discord.Message, '2434pepebusiness')
+  expect(message.channel.send).toHaveBeenCalledTimes(0)
 })

@@ -27,5 +27,6 @@ export const skip = ({ message, serverInfo }: SkipArgs): void => {
     return
   }
   serverInfo.songs.shift()
+  serverInfo.serverAudioPlayer.removeAllListeners()
   playSongThroughVoiceAndLoopQueue({ guild: message.guild, song: serverInfo.songs[0] })
 }
