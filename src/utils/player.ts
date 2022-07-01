@@ -1,5 +1,5 @@
 import Discord from 'discord.js'
-import { createAudioResource, AudioPlayerStatus, PlayerSubscription } from '@discordjs/voice'
+import { createAudioResource, AudioPlayerStatus } from '@discordjs/voice'
 import ytdl from 'ytdl-core'
 import { ServerInfo, Song } from '../types'
 import { deleteServerInfo, serverMap, setPausedState } from './serverMap'
@@ -13,11 +13,9 @@ import { deleteServerInfo, serverMap, setPausedState } from './serverMap'
 export const playSongThroughVoiceAndLoopQueue = ({
   song,
   guild,
-  subscription,
 }: {
   guild: Discord.Guild
   song: Song
-  subscription?: PlayerSubscription
 }): void => {
   const { connection, songs, textChannel, serverAudioPlayer } = serverMap.get(guild.id) || {
     connection: null,
@@ -29,11 +27,6 @@ export const playSongThroughVoiceAndLoopQueue = ({
     return
   }
   try {
-    // if (subscription) {
-    //   console.log('subscription found')
-    //   subscription.unsubscribe()
-    // }
-    const sub = subscription || connection.subscribe(serverAudioPlayer)
     serverAudioPlayer.play(createAudioResource(ytdl(song.url)))
     serverAudioPlayer.on(AudioPlayerStatus.Idle, () => {
       console.log(`song finished: ${songs[0].title}`)
@@ -53,7 +46,7 @@ export const playSongThroughVoiceAndLoopQueue = ({
         return
       }
       // If the queue is not empty, play the next song.
-      playSongThroughVoiceAndLoopQueue({ guild, song: songs[0], subscription: sub })
+      playSongThroughVoiceAndLoopQueue({ guild, song: songs[0] })
     })
     serverAudioPlayer.on('error', (error: any) => {
       console.error(
@@ -70,7 +63,7 @@ export const playSongThroughVoiceAndLoopQueue = ({
         return
       }
       // If the queue is not empty, play the next song.
-      playSongThroughVoiceAndLoopQueue({ guild, song: songs[0], subscription: sub })
+      playSongThroughVoiceAndLoopQueue({ guild, song: songs[0] })
     })
 
     textChannel.send(`Now playing: **${song.title}**`)

@@ -1,30 +1,31 @@
 import Discord from 'discord.js'
 import { getSongObjectFromUserInput } from '../utils/getSongObjectFromUserInput'
-import { messageHandler } from '../handlers/index'
 import { routeMessage } from '../routeMessage'
 // import { playUrl } from '../actions/playUrl'
 
-test('Gets a song from user input consisting of words', async () => {
-  const songObject = await getSongObjectFromUserInput({
-    userInput: 'baby justin bieber',
-    author: 'Max',
+describe('Getting a song from user input retrieves the correct youtube video', () => {
+  test('Gets a song from user input consisting of words', async () => {
+    const songObject = await getSongObjectFromUserInput({
+      userInput: 'baby justin bieber',
+      author: 'Max',
+    })
+    expect(songObject).toEqual({
+      title: 'Justin Bieber - Baby (Lyrics) ft. Ludacris',
+      url: 'https://www.youtube.com/watch?v=oTe_VmWuz08',
+      userAddedBy: 'Max',
+    })
   })
-  expect(songObject).toEqual({
-    title: 'Justin Bieber - Baby (Lyrics) ft. Ludacris',
-    url: 'https://www.youtube.com/watch?v=oTe_VmWuz08',
-    userAddedBy: 'Max',
-  })
-})
 
-test('Gets a song from user input consisting of a youtube url', async () => {
-  const songObject = await getSongObjectFromUserInput({
-    userInput: 'https://www.youtube.com/watch?v=GesEA9MJuII',
-    author: 'Max',
-  })
-  expect(songObject).toEqual({
-    title: 'Gaucho',
-    url: 'https://www.youtube.com/watch?v=GesEA9MJuII',
-    userAddedBy: 'Max',
+  test('Gets a song from user input consisting of a youtube url', async () => {
+    const songObject = await getSongObjectFromUserInput({
+      userInput: 'https://www.youtube.com/watch?v=GesEA9MJuII',
+      author: 'Max',
+    })
+    expect(songObject).toEqual({
+      title: 'Gaucho',
+      url: 'https://www.youtube.com/watch?v=GesEA9MJuII',
+      userAddedBy: 'Max',
+    })
   })
 })
 
@@ -82,7 +83,7 @@ describe('Message Handler', () => {
     message.author.bot = false
     message.content = '!random'
     await routeMessage(message)
-    expect(message.channel.send).toHaveBeenCalledWith('Command not found')
+    expect(message.channel.send).toHaveBeenCalledWith('Command not found.')
     expect(message.channel.send).toHaveBeenCalledTimes(1)
   })
 })
