@@ -1,4 +1,4 @@
-import { joinVoiceChannel } from '@discordjs/voice'
+import { createAudioPlayer, joinVoiceChannel } from '@discordjs/voice'
 import Discord from 'discord.js'
 import { ServerInfo, Song } from '../types'
 import { getSongObjectFromUserInput } from '../utils/getSongObjectFromUserInput'
@@ -53,6 +53,7 @@ export const play = async ({
         }),
         songs: [song],
         isPaused: false,
+        serverPlayer: createAudioPlayer(),
       },
     })
     playSongThroughVoiceAndLoopQueue({ guild, song })

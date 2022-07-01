@@ -1,5 +1,5 @@
 import Discord from 'discord.js'
-import { VoiceConnection } from '@discordjs/voice'
+import { AudioPlayer, VoiceConnection } from '@discordjs/voice'
 
 export type Song = {
   title: string
@@ -18,6 +18,7 @@ export type ServerInfo = {
   connection: VoiceConnection | null
   songs: Song[]
   isPaused: boolean
+  serverPlayer: AudioPlayer
 }
 
 export type YtdlResults = { items: { id: string }[] }

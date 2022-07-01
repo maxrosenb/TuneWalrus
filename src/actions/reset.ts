@@ -1,10 +1,9 @@
 import Discord from 'discord.js'
 import { ServerInfo } from '../types'
-import { player } from '../utils/player'
 import { deleteServerInfo } from '../utils/serverMap'
 import { client } from '../utils/client'
 /**
- * Resets the player if it has a problem
+ * Resets the serverInfo.serverPlayer if it has a problem
  * @param {Discord.Message} message - The Discord Message object
  * @param {ServerInfo} serverInfo - The server info object
  * @param {Map<string, ServerInfo>} serverMap - The serverMap map
@@ -27,7 +26,7 @@ export const reset = async (
       return
     }
 
-    player.stop()
+    serverInfo?.serverPlayer.stop()
     serverInfo?.connection?.disconnect()
     deleteServerInfo(message.guild.id)
 

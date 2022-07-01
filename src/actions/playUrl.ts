@@ -1,6 +1,6 @@
 import Discord from 'discord.js'
 import ytdl from 'ytdl-core'
-import { joinVoiceChannel } from '@discordjs/voice'
+import { createAudioPlayer, joinVoiceChannel } from '@discordjs/voice'
 import { Song, ServerInfo } from '../types'
 import { playSongThroughVoiceAndLoopQueue, togglePause } from '../utils/player'
 import { skip } from './skip'
@@ -95,6 +95,7 @@ export const playUrl = async (
         connection,
         songs: [song],
         isPaused: false,
+        serverPlayer: createAudioPlayer(),
       }
 
       setNewServerInfo({ guildId: guild?.id, serverInfo: serverConstruct })
