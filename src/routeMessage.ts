@@ -21,6 +21,7 @@ import { getServerInfoFromMessage } from './utils/serverMap'
  * @param {Discord.Message} message - The Discord Message object
  */
 export const routeMessage = async (message: Discord.Message) => {
+  console.log('message content: ', message.content, message.content === '!god')
   if (!message.content.startsWith(PREFIX) || message.author.bot || !message.guild) {
     return
   }
@@ -68,7 +69,7 @@ export const routeMessage = async (message: Discord.Message) => {
     return
   }
 
-  if (message.content.startsWith(`${PREFIX}god`)) {
+  if (message.content === `${PREFIX}god`) {
     god(message)
     return
   }
@@ -129,5 +130,5 @@ export const routeMessage = async (message: Discord.Message) => {
     playUrl(message, serverInfo, 'https://www.youtube.com/watch?v=9Z1IGjr2cT0')
     return
   }
-  message.channel.send('You need to enter a valid command!')
+  message.channel.send('Command not found.')
 }

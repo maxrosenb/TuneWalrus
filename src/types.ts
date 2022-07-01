@@ -18,7 +18,7 @@ export type ServerInfo = {
   connection: VoiceConnection | null
   songs: Song[]
   isPaused: boolean
-  serverPlayer: AudioPlayer
+  serverAudioPlayer: AudioPlayer
 }
 
 export type YtdlResults = { items: { id: string }[] }

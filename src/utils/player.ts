@@ -2,7 +2,7 @@ import Discord from 'discord.js'
 import { createAudioResource, AudioPlayerStatus, PlayerSubscription } from '@discordjs/voice'
 import ytdl from 'ytdl-core'
 import { ServerInfo, Song } from '../types'
-import { deleteServerInfo, serverMap, setPaused } from './serverMap'
+import { deleteServerInfo, serverMap, setPausedState } from './serverMap'
 
 /**
  * Play a song through a voice channel via the Discord API
@@ -19,7 +19,7 @@ export const playSongThroughVoiceAndLoopQueue = ({
   song: Song
   subscription?: PlayerSubscription
 }): void => {
-  const { connection, songs, textChannel, serverPlayer } = serverMap.get(guild.id) || {
+  const { connection, songs, textChannel, serverAudioPlayer } = serverMap.get(guild.id) || {
     connection: null,
     songs: [],
     textChannel: guild.afkChannel,
@@ -33,33 +33,37 @@ export const playSongThroughVoiceAndLoopQueue = ({
     //   console.log('subscription found')
     //   subscription.unsubscribe()
     // }
-    const sub = subscription || connection.subscribe(serverPlayer)
-    serverPlayer.play(createAudioResource(ytdl(song.url)))
-    serverPlayer.on(AudioPlayerStatus.Idle, () => {
+    const sub = subscription || connection.subscribe(serverAudioPlayer)
+    serverAudioPlayer.play(createAudioResource(ytdl(song.url)))
+    serverAudioPlayer.on(AudioPlayerStatus.Idle, () => {
       console.log(`song finished: ${songs[0].title}`)
-      serverPlayer.removeAllListeners() // IMPORTANT: remove all listeners before removing the song
+
+      // IMPORTANT: remove all listeners before removing
       // This prevents the idle status from being triggered again
+      serverAudioPlayer.removeAllListeners()
 
       songs.shift() // remove the song that just played from the queue
+
       if (!songs.length) {
-        // If the queue is empty, stop the serverPlayer and disconnect from the voice channel
+        // If the queue is empty, stop the serverAudioPlayer and disconnect from the voice channel
         // and delete the serverInfo object from the map.
         connection?.disconnect()
+        serverAudioPlayer.stop()
         deleteServerInfo(guild.id)
         return
       }
       // If the queue is not empty, play the next song.
       playSongThroughVoiceAndLoopQueue({ guild, song: songs[0], subscription: sub })
     })
-    serverPlayer.on('error', (error: any) => {
+    serverAudioPlayer.on('error', (error: any) => {
       console.error(
         `Discord Player Error: ${error.message} with resource ${error.resource.metadata.title}`
       )
-      serverPlayer.removeAllListeners()
+      serverAudioPlayer.removeAllListeners()
       // on song end
       songs.shift() // remove the song that just played from the queue
       if (!songs.length) {
-        // If the queue is empty, stop the serverPlayer and disconnect from the voice channel
+        // If the queue is empty, stop the serverAudioPlayer and disconnect from the voice channel
         // and delete the serverInfo object from the map.
         connection?.disconnect()
         deleteServerInfo(guild.id)
@@ -93,11 +97,11 @@ export const togglePause = (
   }
   if (message.guild?.id) {
     if (!shouldPause || serverInfo.isPaused) {
-      serverInfo.serverPlayer.unpause()
-      setPaused({ guildId: message.guild.id, newPausedState: false })
+      serverInfo.serverAudioPlayer.unpause()
+      setPausedState({ guildId: message.guild.id, newPausedState: false })
     } else {
-      serverInfo.serverPlayer.pause()
-      setPaused({ guildId: message.guild.id, newPausedState: false })
+      serverInfo.serverAudioPlayer.pause()
+      setPausedState({ guildId: message.guild.id, newPausedState: false })
     }
   }
 }

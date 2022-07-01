@@ -3,7 +3,7 @@ import { ServerInfo } from '../types'
 import { deleteServerInfo } from '../utils/serverMap'
 import { client } from '../utils/client'
 /**
- * Resets the serverInfo.serverPlayer if it has a problem
+ * Resets the serverInfo.serverAudioPlayer if it has a problem
  * @param {Discord.Message} message - The Discord Message object
  * @param {ServerInfo} serverInfo - The server info object
  * @param {Map<string, ServerInfo>} serverMap - The serverMap map
@@ -26,7 +26,7 @@ export const reset = async (
       return
     }
 
-    serverInfo?.serverPlayer.stop()
+    serverInfo?.serverAudioPlayer.stop()
     serverInfo?.connection?.disconnect()
     deleteServerInfo(message.guild.id)
 

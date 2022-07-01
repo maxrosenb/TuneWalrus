@@ -23,20 +23,19 @@ export const play = async ({
 }) => {
   const { guild, member, author, content, channel, client } = message
 
-  const isValidMessage =
+  const isValidCommand =
     client.user &&
     guild &&
     member?.voice.channel &&
     member?.voice.channel.permissionsFor(client.user)
 
-  if (!isValidMessage) {
+  if (!isValidCommand) {
+    message.channel.send('TuneWalrus had a problem playing this song')
     return
   }
 
-  const userInput = content.split(' ').slice(1).join(' ')
-
   const song: Song = await getSongObjectFromUserInput({
-    userInput,
+    userInput: content.split(' ').slice(1).join(' '),
     author: author.username,
   })
 
@@ -53,7 +52,7 @@ export const play = async ({
         }),
         songs: [song],
         isPaused: false,
-        serverPlayer: createAudioPlayer(),
+        serverAudioPlayer: createAudioPlayer(),
       },
     })
     playSongThroughVoiceAndLoopQueue({ guild, song })

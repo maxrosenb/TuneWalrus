@@ -6,7 +6,7 @@ import { playSongThroughVoiceAndLoopQueue, togglePause } from '../utils/player'
 import { skip } from './skip'
 import { getAudioFromUrl } from '../utils/getAudioFromUrl'
 import { possiblySendEmoji } from '../utils/sendEmoji'
-import { setNewServerInfo, setPaused } from '../utils/serverMap'
+import { setNewServerInfo, setPausedState } from '../utils/serverMap'
 
 let boingSound: ytdl.videoInfo
 let grocerySound: ytdl.videoInfo
@@ -74,7 +74,7 @@ export const playUrl = async (
     }
 
     if (serverInfo?.isPaused && guild?.id) {
-      setPaused({ guildId: guild.id, newPausedState: false })
+      setPausedState({ guildId: guild.id, newPausedState: false })
       togglePause(message, serverInfo, false)
       return
     }
@@ -95,7 +95,7 @@ export const playUrl = async (
         connection,
         songs: [song],
         isPaused: false,
-        serverPlayer: createAudioPlayer(),
+        serverAudioPlayer: createAudioPlayer(),
       }
 
       setNewServerInfo({ guildId: guild?.id, serverInfo: serverConstruct })

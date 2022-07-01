@@ -20,7 +20,7 @@ export const deleteServerInfo = (guildId: string): void => {
   serverMap.delete(guildId)
 }
 
-export const setPaused = ({
+export const setPausedState = ({
   guildId,
   newPausedState,
 }: {

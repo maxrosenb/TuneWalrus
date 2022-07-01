@@ -6,7 +6,6 @@ import { playSongThroughVoiceAndLoopQueue } from '../utils/player'
  * Skip a song
  * @param {Discord.Message} message - The Discord Message object
  * @param {ServerInfo} serverInfo - The server info object
- * @param {Map<string, ServerInfo>} serverMap - The serverMap map
  */
 
 interface SkipArgs {
