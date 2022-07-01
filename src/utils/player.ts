@@ -1,12 +1,10 @@
-import { createAudioPlayer } from '@discordjs/voice'
 import Discord from 'discord.js'
+import { createAudioResource, AudioPlayerStatus, createAudioPlayer } from '@discordjs/voice'
 import ytdl from 'ytdl-core'
 import { Song } from '../types'
 import { deleteServerInfo, serverMap } from './serverMap'
 
 export const player = createAudioPlayer()
-
-const { createAudioResource, AudioPlayerStatus } = require('@discordjs/voice')
 
 /**
  * Play a song through a voice channel via the Discord API

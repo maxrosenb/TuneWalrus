@@ -10,7 +10,7 @@ interface StopArgs {
 }
 
 export const stop = ({ message, serverInfo }: StopArgs): void => {
-  if (!serverInfo?.connection) {
+  if (!message.guild?.id) {
     return
   }
   if (!message.member?.voice.channel) {
@@ -18,15 +18,8 @@ export const stop = ({ message, serverInfo }: StopArgs): void => {
     return
   }
 
-  if (!serverInfo) {
-    message.channel.send('There is no song that I could stop!')
-    return
-  }
-
-  if (message.guild?.id) {
-    deleteQueue(message.guild.id)
-  }
+  deleteQueue(message?.guild?.id)
   player.stop()
-  serverInfo.connection.disconnect()
+  serverInfo?.connection?.disconnect()
   reset(message, serverInfo, false)
 }
