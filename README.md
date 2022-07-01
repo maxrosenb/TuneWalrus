@@ -4,19 +4,19 @@
 
 ## Commands
 
--   `Play <song title>` or `Play <youtube url>`
+- `Play <song title>` or `Play <youtube url>`
 
-    -   Searches the song title on youtube and adds the first result to the queue, or if you pass a youtube url will just use that video
-    -   Examples: `play Hey Ya` or `play https://www.youtube.com/watch?v=iGx5a1ifSDs`
+  - Searches the song title on youtube and adds the first result to the queue, or if you pass a youtube url will just use that video
+  - Examples: `play Hey Ya` or `play https://www.youtube.com/watch?v=iGx5a1ifSDs`
 
--   `Skip`
-    -   Skips Song
--   `Stop`
-    -   Stops play and deletes queue
--   `emptyqueue`
-    -   Empties queue
--   `assertdominance <song title>` or `assertdominance <youtube url>`
-    -   Skips current song and immediately plays this one
+- `Skip`
+  - Skips Song
+- `Stop`
+  - Stops play and deletes queue
+- `emptyqueue`
+  - Empties queue
+- `assertdominance <song title>` or `assertdominance <youtube url>`
+  - Skips current song and immediately plays this one
 
 ## Installation
 

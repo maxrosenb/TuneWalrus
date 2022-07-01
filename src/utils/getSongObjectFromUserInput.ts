@@ -1,5 +1,5 @@
 import ytdl from 'ytdl-core'
-import { Song } from '../types'
+import { Song, YtdlResults } from '../types'
 
 const youtubesearchapi = require('youtube-search-api')
 
@@ -10,19 +10,23 @@ const youtubesearchapi = require('youtube-search-api')
  * @param {string} author - Message author.
  * @returns {Promise<Song>} The song object.
  */
-export const getSongObjectFromUserInput = async (
-    userInput: string,
-    author: string
-): Promise<Song> => {
-    const videoId = await youtubesearchapi.GetListByKeyword(userInput, false, 1)
-    const { videoDetails } = await ytdl.getInfo(
+export const getSongObjectFromUserInput = ({
+  userInput,
+  author,
+}: {
+  userInput: string
+  author: string
+}): Promise<Song> =>
+  youtubesearchapi.GetListByKeyword(userInput, false, 1).then((videoId: YtdlResults) =>
+    ytdl
+      .getInfo(
         userInput.includes('https')
-            ? userInput
-            : 'https://www.youtube.com/watch?v=' + videoId.items[0].id
-    )
-    return {
-        title: videoDetails.title,
-        url: videoDetails.video_url,
+          ? userInput
+          : 'https://www.youtube.com/watch?v=' + videoId.items[0].id
+      )
+      .then((videoInfo: ytdl.videoInfo) => ({
+        title: videoInfo.videoDetails.title,
+        url: videoInfo.videoDetails.video_url,
         userAddedBy: author,
-    }
-}
+      }))
+  )

@@ -1,79 +1,83 @@
-import Discord from 'discord.js'
 import { joinVoiceChannel } from '@discordjs/voice'
-import { togglePause } from './pause'
-import { Song, ServerInfo } from '../types'
-import { playThroughVC } from '../utils/playThroughVoiceChannel'
-import { skip } from './skip'
+import Discord from 'discord.js'
+import { ServerInfo, Song } from '../types'
 import { getSongObjectFromUserInput } from '../utils/getSongObjectFromUserInput'
-import { serverMap, setPaused } from '../utils/serverMap'
+import { playSongThroughVoiceAndLoopQueue } from '../utils/player'
+import { setNewServerInfo } from '../utils/serverMap'
+import { togglePause } from './pause'
+import { skip } from './skip'
+
 /**
  * Play a song from the queue.
- * @param {string} Discord.Message - The Discord Message object.
+ * @param {Discord.Message} message - The Discord Message object.
  * @param {ServerInfo} serverInfo - The server info object.
- * @param {Discord.Client} client - The Discord client object.
+ * @param {boolean} assertDominance - The Discord client object.
  */
-export const play = async (
-    message: Discord.Message,
-    serverInfo: ServerInfo | undefined,
-    assertDominance: boolean = false
-): Promise<void> => {
-    try {
-        if (
-            !message.client.user ||
-            !message.guild ||
-            !message.member?.voice.channel ||
-            message.member?.voice.channel.permissionsFor(message.client.user) === null
-        ) {
-            return
-        }
+export const play = async ({
+  message,
+  serverInfo,
+  assertDominance = false,
+}: {
+  message: Discord.Message
+  serverInfo: ServerInfo | undefined
+  assertDominance?: boolean
+}) => {
+  const { guild, member, author, content, channel, client } = message
 
-        if (serverInfo?.isPaused) {
-            setPaused(message.guild.id, false)
-            togglePause(message, serverInfo, false)
-        }
+  const isValidMessage =
+    client.user &&
+    guild &&
+    member?.voice.channel &&
+    member?.voice.channel.permissionsFor(client.user)
 
-        const song: Song = await getSongObjectFromUserInput(
-            message.content.split(' ').slice(1).join(' '),
-            message.author.username
-        ) // Get the song from the message
+  if (!isValidMessage) {
+    return
+  }
 
-        if (!serverInfo) {
-            // If we've never seen this server before, add it to the Map before playing the song
+  const userInput = content.split(' ').slice(1).join(' ')
 
-            serverMap.set(message.guild.id, {
-                textChannel: message.channel,
-                connection: joinVoiceChannel({
-                    channelId: message.member.voice.channel.id,
-                    guildId: message.guild.id,
-                    adapterCreator: message.guild.voiceAdapterCreator,
-                    selfDeaf: false,
-                }),
-                songs: [song],
-                isPaused: false,
-            })
+  const song: Song = await getSongObjectFromUserInput({
+    userInput,
+    author: author.username,
+  })
 
-            playThroughVC(message.guild, song)
-            return
-        }
+  if (!serverInfo) {
+    setNewServerInfo({
+      guildId: guild.id,
+      serverInfo: {
+        textChannel: channel,
+        connection: joinVoiceChannel({
+          channelId: member.voice.channel.id,
+          guildId: guild.id,
+          adapterCreator: guild.voiceAdapterCreator,
+          selfDeaf: false,
+        }),
+        songs: [song],
+        isPaused: false,
+      },
+    })
+    playSongThroughVoiceAndLoopQueue({ guild, song })
+  } else {
+    const { isPaused, songs } = serverInfo
 
-        if (assertDominance) {
-            message.channel.send(
-                `**ASSERTING DOMINANCE**  ${
-                    message.guild?.emojis?.cache.find(
-                        (emoji) => emoji.name === '2434pepebusiness'
-                    ) || ''
-                }`
-            )
-            serverInfo.songs.splice(1, 0, song)
-            skip(message, serverInfo)
-        } else {
-            serverInfo.songs.push(song)
-            if (serverInfo.songs.length === 1) {
-                playThroughVC(message.guild, song)
-            }
-            message.channel.send(`${song.title} has been added to the queue!`)
-        }
-    } catch (error) {
-        console.log(error)
+    if (isPaused) {
+      togglePause(message, serverInfo, false)
     }
+
+    if (assertDominance) {
+      channel.send(
+        `**ASSERTING DOMINANCE**  ${
+          guild?.emojis?.cache.find((emoji) => emoji.name === '2434pepebusiness') || ''
+        }`
+      )
+      songs.splice(1, 0, song)
+      skip({ message, serverInfo })
+    } else {
+      songs.push(song)
+      if (songs.length === 1) {
+        playSongThroughVoiceAndLoopQueue({ guild, song })
+      }
+    }
+    channel.send(`${song.title} has been added to the queue!`)
+  }
 }

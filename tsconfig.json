@@ -1,11 +1,11 @@
 {
-    "compilerOptions": {
-        "outDir": "./dist",
-        "rootDir": "./src",
-        "strict": true,
-        "moduleResolution": "node",
-        "esModuleInterop": true,
-        "target": "es2022"
-    },
-    "exclude": ["./node_modules"]
+  "compilerOptions": {
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "strict": true,
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "target": "es2022"
+  },
+  "exclude": ["./node_modules"]
 }

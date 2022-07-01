@@ -1,25 +1,21 @@
 import Discord from 'discord.js'
+import { TOKEN } from './config'
+import { routeMessage } from './routeMessage'
 import { client } from './utils/client'
-import { PREFIX, TOKEN } from './config'
-import { routeMessage } from './commands'
 
 if (!TOKEN) {
-    console.log('No token found. Please set TOKEN in config.ts')
-    process.exit(1)
+  console.log(
+    'No Discord API token found. Please set your token as the TOKEN environment variable in a .env file.'
+  )
+  process.exit(1)
 }
 
-try {
-    client.once('ready', (): void => {
-        console.log('TuneWalrus is ready')
-    })
+client.once('ready', (): void => {
+  console.log('TuneWalrus is ready')
+})
 
-    client.on('messageCreate', async (message: Discord.Message): Promise<void> => {
-        if (message.content.startsWith(PREFIX) && !message.author.bot) {
-            await routeMessage(message)
-        }
-    })
+client.on('messageCreate', async (message: Discord.Message) => {
+  await routeMessage(message)
+})
 
-    client.login(TOKEN)
-} catch (err) {
-    console.log(err)
-}
+client.login(TOKEN)

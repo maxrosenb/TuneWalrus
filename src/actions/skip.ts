@@ -1,6 +1,6 @@
 import Discord from 'discord.js'
 import { ServerInfo } from '../types'
-import { playThroughVC } from '../utils/playThroughVoiceChannel'
+import { playSongThroughVoiceAndLoopQueue } from '../utils/player'
 
 /**
  * Skip a song
@@ -8,18 +8,25 @@ import { playThroughVC } from '../utils/playThroughVoiceChannel'
  * @param {ServerInfo} serverInfo - The server info object
  * @param {Map<string, ServerInfo>} serverMap - The serverMap map
  */
-export const skip = (message: Discord.Message, serverInfo: ServerInfo | undefined): void => {
-    if (!serverInfo?.connection || !message.guild) {
-        return
-    }
-    if (!message.member?.voice.channel) {
-        message.channel.send('You have to be in a voice channel to stop the music!')
-        return
-    }
-    if (!serverInfo) {
-        message.channel.send('There is no song that I could skip!')
-        return
-    }
-    serverInfo.songs.shift()
-    playThroughVC(message.guild, serverInfo.songs[0])
+
+interface SkipArgs {
+  message: Discord.Message
+  serverInfo: ServerInfo | undefined
+}
+export const skip = ({ message, serverInfo }: SkipArgs): void => {
+  const isValidMessage = serverInfo?.connection && message.guild
+  if (!isValidMessage) {
+    return
+  }
+
+  if (!message.member?.voice.channel) {
+    message.channel.send('You have to be in a voice channel to stop the music!')
+    return
+  }
+  if (!serverInfo) {
+    message.channel.send('There is no song that I could skip!')
+    return
+  }
+  serverInfo.songs.shift()
+  playSongThroughVoiceAndLoopQueue({ guild: message.guild, song: serverInfo.songs[0] })
 }
