@@ -58,6 +58,7 @@ export const routeMessage = async (message: Discord.Message) => {
     const leaderList = await leaderBoard()
     const leaderListAsString = leaderList.join('\n')
     message.channel.send(leaderListAsString)
+    return
   }
 
   if (
