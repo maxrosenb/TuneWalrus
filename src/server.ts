@@ -11,7 +11,7 @@ if (!TOKEN) {
 }
 
 client.once('ready', (): void => {
-  console.log('TuneWalrus is ready')
+  console.log('LOADED TUNEWALRUS')
 })
 
 client.on('messageCreate', async (message: Discord.Message) => {
