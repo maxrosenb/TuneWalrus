@@ -16,6 +16,7 @@ const INIT_QUERY = `CREATE TABLE IF NOT EXISTS public.users (
     discord_id character varying(50)
     );
     ALTER TABLE public.users OWNER TO postgres;
+    CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 `
 
