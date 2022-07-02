@@ -69,5 +69,10 @@ export const getNumSongsPlayed = async ({ discordId }: { discordId: string }) =>
   const result = await pool.query(`SELECT num_songs_played FROM users WHERE discord_id = $1`, [
     discordId,
   ])
+  console.log('result of get num songs played:')
+  console.log(result)
+  if (result?.rows.length === 0) {
+    return 0
+  }
   return result.rows[0].num_songs_played
 }
