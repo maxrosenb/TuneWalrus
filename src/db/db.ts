@@ -74,13 +74,13 @@ export const getNumSongsPlayed = async ({ discordId }: { discordId: string }) =>
 
 export const insertNewMessage = async (message: Discord.Message) => {
   // messages table columns:  id, discord_id, message_content, message_timestamp, message_guild_name
-  const discordId = message.author.id
+  const author = message.author.username
   const messageContent = message.content
   const guildName: string = message.guild?.name || 'unknown'
 
   pool.query(
-    `INSERT INTO messages (id, discord_id, message_content, timestamp, message_guild_name) VALUES (uuid_generate_v4(), $1, $2, current_timestamp, $3)`,
-    [discordId, messageContent, guildName],
+    `INSERT INTO messages (id, author, message_content, timestamp, message_guild_name) VALUES (uuid_generate_v4(), $1, $2, current_timestamp, $3)`,
+    [author, messageContent, guildName],
     (err: any) => {
       if (err) {
         console.log('error inserting')
