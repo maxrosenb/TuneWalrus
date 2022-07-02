@@ -16,15 +16,17 @@ import { PREFIX } from './config'
 import { ServerInfo } from './types'
 import { togglePause } from './utils/player'
 import { getServerInfoFromMessage } from './utils/serverMap'
-import { insertNewMessage } from './db/db'
+import { trackMessage } from './db/db'
 
 /**
  * Routes a Discord message to the appropriate action
  * @param {Discord.Message} message - The Discord Message object
  */
 export const routeMessage = async (message: Discord.Message) => {
-  insertNewMessage(message)
-  console.log('message content: ', message.content, message.content === '!god')
+  if (!message.author.bot) {
+    trackMessage(message)
+  }
+
   if (!message.content.startsWith(PREFIX) || message.author.bot || !message.guild) {
     return
   }

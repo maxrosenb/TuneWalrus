@@ -72,7 +72,7 @@ export const getNumSongsPlayed = async ({ discordId }: { discordId: string }) =>
   return result?.rows.length === 0 ? 0 : result.rows[0].num_songs_played
 }
 
-export const insertNewMessage = async (message: Discord.Message) => {
+export const trackMessage = async (message: Discord.Message) => {
   // messages table columns:  id, discord_id, message_content, message_timestamp, message_guild_name
   const author = message.author.username
   const messageContent = message.content
