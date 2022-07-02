@@ -1,4 +1,5 @@
 /* eslint-disable quotes */
+import Discord from 'discord.js'
 import { Pool } from 'pg'
 
 const pool = new Pool({
@@ -29,7 +30,7 @@ export const incrementPlayCountForUser = ({
   username,
   discordId,
 }: {
-  username: String
+  username: string
   discordId: string
 }) => {
   try {
@@ -41,21 +42,19 @@ export const incrementPlayCountForUser = ({
         pool.query(
           `INSERT INTO users (username, id, num_songs_played, discord_id) VALUES ($1, uuid_generate_v4(), 1, $2)`,
           [username, discordId],
-          (err2: any, res2: any) => {
+          (err2: any) => {
             if (err2) {
               console.log(err2)
             }
-            console.log(res2)
           }
         )
       } else {
         pool.query(
           `UPDATE users SET num_songs_played = num_songs_played + 1 WHERE discord_id = '${discordId}'`,
-          (err3: any, res3: any) => {
+          (err3: any) => {
             if (err3) {
               console.log(err3)
             }
-            console.log(res3)
           }
         )
       }
@@ -69,10 +68,24 @@ export const getNumSongsPlayed = async ({ discordId }: { discordId: string }) =>
   const result = await pool.query(`SELECT num_songs_played FROM users WHERE discord_id = $1`, [
     discordId,
   ])
-  console.log('result of get num songs played:')
-  console.log(result)
-  if (result?.rows.length === 0) {
-    return 0
-  }
-  return result.rows[0].num_songs_played
+
+  return result?.rows.length === 0 ? 0 : result.rows[0].num_songs_played
+}
+
+export const insertNewMessage = async (message: Discord.Message) => {
+  // messages table columns:  id, discord_id, message_content, message_timestamp, message_guild_name
+  const discordId = message.author.id
+  const messageContent = message.content
+  const guildName: string = message.guild?.name || 'unknown'
+
+  pool.query(
+    `INSERT INTO messages (id, discord_id, message_content, timestamp, message_guild_name) VALUES (uuid_generate_v4(), $1, $2, current_timestamp, $3)`,
+    [discordId, messageContent, guildName],
+    (err: any) => {
+      if (err) {
+        console.log('error inserting')
+        console.log(err)
+      }
+    }
+  )
 }
