@@ -18,7 +18,6 @@ const INIT_QUERY = `CREATE TABLE IF NOT EXISTS public.users (
     );
     ALTER TABLE public.users OWNER TO postgres;
     CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
-
 `
 
 pool.query(INIT_QUERY, (err, res) => {
@@ -73,14 +72,9 @@ export const getNumSongsPlayed = async ({ discordId }: { discordId: string }) =>
 }
 
 export const trackMessage = async (message: Discord.Message) => {
-  // messages table columns:  id, discord_id, message_content, message_timestamp, message_guild_name
-  const author = message.author.username
-  const messageContent = message.content
-  const guildName: string = message.guild?.name || 'unknown'
-
   pool.query(
     `INSERT INTO messages (id, author, content, timestamp, guild_name) VALUES (uuid_generate_v4(), $1, $2, current_timestamp, $3)`,
-    [author, messageContent, guildName],
+    [message.author.username, message.content, message.guild?.name || 'unknown'],
     (err: any) => {
       if (err) {
         console.log('error inserting')
@@ -88,4 +82,10 @@ export const trackMessage = async (message: Discord.Message) => {
       }
     }
   )
+}
+
+// leaderBoad function: Gets all users sorted by num_songs_played in descending order.
+export const leaderBoard = async () => {
+  const result = await pool.query(`SELECT * FROM users ORDER BY num_songs_played DESC`)
+  return result.rows.map((row, i) => `${i + 1}. ${row.username} - ${row.num_songs_played}`)
 }
