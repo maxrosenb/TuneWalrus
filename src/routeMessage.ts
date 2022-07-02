@@ -16,7 +16,7 @@ import { PREFIX } from './config'
 import { ServerInfo } from './types'
 import { togglePause } from './utils/player'
 import { getServerInfoFromMessage } from './utils/serverMap'
-import { trackMessage } from './db/db'
+import { leaderBoard, trackMessage } from './db/db'
 
 /**
  * Routes a Discord message to the appropriate action
@@ -52,6 +52,12 @@ export const routeMessage = async (message: Discord.Message) => {
   if (message.content.startsWith(`${PREFIX}numplayed`)) {
     await numPlayedCommand(message)
     return
+  }
+
+  if (message.content.startsWith(`${PREFIX}leaderboard`)) {
+    const leaderList = await leaderBoard()
+    const leaderListAsString = leaderList.join('\n')
+    message.channel.send(leaderListAsString)
   }
 
   if (
