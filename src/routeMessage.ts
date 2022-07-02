@@ -1,27 +1,32 @@
 import Discord from 'discord.js'
-import { PREFIX } from './config'
-import { ServerInfo } from './types'
-import { play } from './commands/play'
-import { stop } from './commands/stop'
-import { skip } from './commands/skip'
-import { emptyQueue } from './commands/emptyQueue'
-import { listQueue } from './commands/listQueue'
+import { insertNext } from './commands/assertBeta'
 import { assertDominance } from './commands/assertDominance'
+import { currentlyPlaying } from './commands/currentPlaying'
+import { emptyQueue } from './commands/emptyQueue'
 import { god } from './commands/god'
 import { help } from './commands/help'
-import { reset } from './commands/reset'
-import { currentlyPlaying } from './commands/currentPlaying'
-import { togglePause } from './utils/player'
+import { listQueue } from './commands/listQueue'
+import { numPlayedCommand } from './commands/numPlayed'
+import { play } from './commands/play'
 import { playUrl } from './commands/playUrl'
-import { insertNext } from './commands/assertBeta'
+import { reset } from './commands/reset'
+import { skip } from './commands/skip'
+import { stop } from './commands/stop'
+import { PREFIX } from './config'
+import { ServerInfo } from './types'
+import { togglePause } from './utils/player'
 import { getServerInfoFromMessage } from './utils/serverMap'
+import { trackMessage } from './db/db'
 
 /**
  * Routes a Discord message to the appropriate action
  * @param {Discord.Message} message - The Discord Message object
  */
 export const routeMessage = async (message: Discord.Message) => {
-  console.log('message content: ', message.content, message.content === '!god')
+  if (!message.author.bot) {
+    trackMessage(message)
+  }
+
   if (!message.content.startsWith(PREFIX) || message.author.bot || !message.guild) {
     return
   }
@@ -40,6 +45,12 @@ export const routeMessage = async (message: Discord.Message) => {
 
   if (message.content.startsWith(`${PREFIX}skip`)) {
     skip({ message, serverInfo })
+    return
+  }
+
+  // Num songs played command
+  if (message.content.startsWith(`${PREFIX}numplayed`)) {
+    await numPlayedCommand(message)
     return
   }
 
