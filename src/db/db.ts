@@ -87,5 +87,7 @@ export const trackMessage = async (message: Discord.Message) => {
 // leaderBoad function: Gets all users sorted by num_songs_played in descending order.
 export const leaderBoard = async () => {
   const result = await pool.query(`SELECT * FROM users ORDER BY num_songs_played DESC`)
-  return result.rows.map((row, i) => `${i + 1}. ${row.username} - ${row.num_songs_played}`)
+  return result.rows.map(
+    (row, i) => `${i + 1}. **${row.username}** - ${row.num_songs_played} songs`
+  )
 }
