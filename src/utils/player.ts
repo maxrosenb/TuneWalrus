@@ -27,6 +27,8 @@ export const playSongThroughVoiceAndLoopQueue = ({
     return
   }
   try {
+    console.log(`will try to play ${song.url} with data:`)
+
     serverAudioPlayer.play(createAudioResource(ytdl(song.url)))
     serverAudioPlayer.on(AudioPlayerStatus.Idle, () => {
       console.log(`song finished: ${songs[0].title}`)
@@ -50,7 +52,7 @@ export const playSongThroughVoiceAndLoopQueue = ({
     })
     serverAudioPlayer.on('error', (error: any) => {
       console.error(
-        `Discord Player Error: ${error.message} with resource ${error.resource.metadata.title}`
+        `Discord Player Error: ${error?.message} with resource ${error?.resource?.metadata?.title}`
       )
       serverAudioPlayer.removeAllListeners()
       // on song end
@@ -67,6 +69,7 @@ export const playSongThroughVoiceAndLoopQueue = ({
     })
 
     textChannel.send(`Now playing: **${song.title}**`)
+    connection.subscribe(serverAudioPlayer)
   } catch (error) {
     console.log(error)
   }

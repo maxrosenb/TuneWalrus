@@ -78,7 +78,7 @@ export const play = async ({
       if (songs.length === 1) {
         playSongThroughVoiceAndLoopQueue({ guild, song })
       }
+      channel.send(`${song.title} has been added to the queue!`)
     }
-    channel.send(`${song.title} has been added to the queue!`)
   }
 }
