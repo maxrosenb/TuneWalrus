@@ -9,6 +9,21 @@ const pool = new Pool({
   port: 5432,
 })
 
+const INIT_QUERY = `CREATE TABLE IF NOT EXISTS public.users (
+    username character varying(25) NOT NULL,
+    id uuid NOT NULL,
+    num_songs_played bigint NOT NULL,
+    discord_id character varying(50)
+    );
+    ALTER TABLE public.users OWNER TO postgres;
+
+`
+
+pool.query(INIT_QUERY, (err, res) => {
+  console.log('init res:')
+  console.log(res)
+})
+
 export const incrementPlayCountForUser = ({
   username,
   discordId,
