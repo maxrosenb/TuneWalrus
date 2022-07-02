@@ -9,7 +9,7 @@ services:
     ports:
       - 8080:80
     environment:
-      - DB_HOST=host.docker.internal
+      - DB_HOST=127.0.0.1
       - DB_USER=postgres
       - DB_PASS=slime
     depends_on:
