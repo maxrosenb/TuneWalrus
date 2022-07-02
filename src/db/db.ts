@@ -79,7 +79,7 @@ export const insertNewMessage = async (message: Discord.Message) => {
   const guildName: string = message.guild?.name || 'unknown'
 
   pool.query(
-    `INSERT INTO messages (id, author, message_content, timestamp, message_guild_name) VALUES (uuid_generate_v4(), $1, $2, current_timestamp, $3)`,
+    `INSERT INTO messages (id, author, content, timestamp, guild_name) VALUES (uuid_generate_v4(), $1, $2, current_timestamp, $3)`,
     [author, messageContent, guildName],
     (err: any) => {
       if (err) {
