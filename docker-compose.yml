@@ -29,6 +29,7 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=slime
       - POSTGRES_DB=tunewalrusdb
+      - PGDATA=/var/lib/postgresql/data/some_name/
 
 volumes:
   pgdata1: {}
