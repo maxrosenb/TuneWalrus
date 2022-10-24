@@ -5,7 +5,7 @@ import { getSongObjectFromUserInput } from '../utils/getSongObjectFromUserInput'
 import { playSongThroughVoiceAndLoopQueue, togglePause } from '../utils/player'
 import { setNewServerInfo } from '../utils/serverMap'
 import { skip } from './skip'
-import { incrementPlayCountForUser } from '../db/db'
+// import { incrementPlayCountForUser } from '../db/db'
 /**
  * Play a song from the queue.
  * @param {Discord.Message} message - The Discord Message object.
@@ -34,7 +34,7 @@ export const play = async ({
     return
   }
 
-  incrementPlayCountForUser({ username: author.username, discordId: member.id })
+  // incrementPlayCountForUser({ username: author.username, discordId: member.id })
 
   const song: Song = await getSongObjectFromUserInput({
     userInput: content.split(' ').slice(1).join(' '),

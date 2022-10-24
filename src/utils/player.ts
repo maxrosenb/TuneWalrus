@@ -4,19 +4,21 @@ import ytdl from 'ytdl-core'
 import { ServerInfo, Song } from '../types'
 import { deleteServerInfo, serverMap, setPausedState } from './serverMap'
 
+const { join } = require('node:path')
+
 /**
  * Play a song through a voice channel via the Discord API
  * @param {Discord.Guild} guild - The Discord Guild object
  * @param {Song} song - The song to play
  */
 
-export const playSongThroughVoiceAndLoopQueue = ({
+export const playSongThroughVoiceAndLoopQueue = async ({
   song,
   guild,
 }: {
   guild: Discord.Guild
   song: Song
-}): void => {
+}) => {
   const { connection, songs, textChannel, serverAudioPlayer } = serverMap.get(guild.id) || {
     connection: null,
     songs: [],
@@ -28,8 +30,16 @@ export const playSongThroughVoiceAndLoopQueue = ({
   }
   try {
     console.log(`will try to play ${song.url} with data:`)
+    console.log(__dirname)
 
-    serverAudioPlayer.play(createAudioResource(ytdl(song.url)))
+    const resource = createAudioResource(join(__dirname, 'ex.mp3'))
+
+    const output = ytdl(song.url, { filter: 'audioonly' })
+    const youtubeSong = createAudioResource(output)
+    youtubeSong.volume?.setVolume(0.5)
+    resource.volume?.setVolume(0.5)
+
+    serverAudioPlayer.play(youtubeSong)
     serverAudioPlayer.on(AudioPlayerStatus.Idle, () => {
       console.log(`song finished: ${songs[0].title}`)
 

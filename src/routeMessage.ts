@@ -16,7 +16,7 @@ import { PREFIX } from './config'
 import { ServerInfo } from './types'
 import { togglePause } from './utils/player'
 import { getServerInfoFromMessage } from './utils/serverMap'
-import { leaderBoard, trackMessage } from './db/db'
+import { leaderBoard } from './db/db'
 
 /**
  * Routes a Discord message to the appropriate action
@@ -24,7 +24,7 @@ import { leaderBoard, trackMessage } from './db/db'
  */
 export const routeMessage = async (message: Discord.Message) => {
   if (!message.author.bot) {
-    trackMessage(message)
+    // trackMessage(message)
   }
 
   if (!message.content.startsWith(PREFIX) || message.author.bot || !message.guild) {
