@@ -20,8 +20,7 @@
 
 ## Installation
 
-`npm install`
+`yarn install`
 
-`ts-node --transpile-only src/server.ts`
+`ts-node src/server.ts`
 
-still a few tiny TS things to be fixed, hence --transpile-only

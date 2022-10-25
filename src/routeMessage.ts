@@ -6,7 +6,6 @@ import { emptyQueue } from './commands/emptyQueue'
 import { god } from './commands/god'
 import { help } from './commands/help'
 import { listQueue } from './commands/listQueue'
-import { numPlayedCommand } from './commands/numPlayed'
 import { play } from './commands/play'
 import { playUrl } from './commands/playUrl'
 import { reset } from './commands/reset'
@@ -16,17 +15,12 @@ import { PREFIX } from './config'
 import { ServerInfo } from './types'
 import { togglePause } from './utils/player'
 import { getServerInfoFromMessage } from './utils/serverMap'
-import { leaderBoard } from './db/db'
 
 /**
  * Routes a Discord message to the appropriate action
  * @param {Discord.Message} message - The Discord Message object
  */
 export const routeMessage = async (message: Discord.Message) => {
-  if (!message.author.bot) {
-    // trackMessage(message)
-  }
-
   if (!message.content.startsWith(PREFIX) || message.author.bot || !message.guild) {
     return
   }
@@ -45,19 +39,6 @@ export const routeMessage = async (message: Discord.Message) => {
 
   if (message.content.startsWith(`${PREFIX}skip`)) {
     skip({ message, serverInfo })
-    return
-  }
-
-  // Num songs played command
-  if (message.content.startsWith(`${PREFIX}numplayed`)) {
-    await numPlayedCommand(message)
-    return
-  }
-
-  if (message.content.startsWith(`${PREFIX}leaderboard`)) {
-    const leaderList = await leaderBoard()
-    const leaderListAsString = leaderList.join('\n')
-    message.channel.send(leaderListAsString)
     return
   }
 
