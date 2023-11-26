@@ -1,6 +1,6 @@
 import Discord from 'discord.js'
 import { createAudioResource, AudioPlayerStatus } from '@discordjs/voice'
-import ytdl from 'ytdl-core'
+import play from 'play-dl'
 import { ServerInfo, Song } from '../types'
 import { deleteServerInfo, serverMap, setPausedState } from './serverMap'
 
@@ -30,8 +30,12 @@ export const playSongThroughVoiceAndLoopQueue = async ({
     console.log(`will try to play ${song.url} with data:`)
     console.log(__dirname)
 
-    const output = ytdl(song.url, { filter: 'audioonly' })
-    const youtubeSong = createAudioResource(output)
+    // const output = ytdl(song.url, { filter: 'audioonly' })
+    const stream = await play.stream(song.url)
+    const youtubeSong = createAudioResource(stream.stream, {
+      inputType: stream.type,
+      inlineVolume: true,
+    })
     youtubeSong.volume?.setVolume(0.5)
 
     serverAudioPlayer.play(youtubeSong)

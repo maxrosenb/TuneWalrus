@@ -39,6 +39,7 @@
     "fluent-ffmpeg": "^2.1.2",
     "opusscript": "^0.0.8",
     "pg": "^8.7.3",
+    "play-dl": "^1.9.7",
     "pm2": "^5.3.0",
     "tweetnacl": "^1.0.3",
     "uuid": "^8.3.2",
