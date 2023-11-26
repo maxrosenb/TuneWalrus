@@ -106,7 +106,7 @@ export const togglePause = (
       setPausedState({ guildId: message.guild.id, newPausedState: false })
     } else {
       serverInfo.serverAudioPlayer.pause()
-      setPausedState({ guildId: message.guild.id, newPausedState: false })
+      setPausedState({ guildId: message.guild.id, newPausedState: true })
     }
   }
 }
