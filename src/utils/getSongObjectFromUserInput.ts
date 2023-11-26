@@ -17,16 +17,23 @@ export const getSongObjectFromUserInput = ({
   userInput: string
   author: string
 }): Promise<Song> =>
-  youtubesearchapi.GetListByKeyword(userInput, false, 1).then((videoId: YtdlResults) =>
-    ytdl
-      .getInfo(
-        userInput.includes('https')
-          ? userInput
-          : 'https://www.youtube.com/watch?v=' + videoId.items[0].id
-      )
-      .then((videoInfo: ytdl.videoInfo) => ({
-        title: videoInfo.videoDetails.title,
-        url: videoInfo.videoDetails.video_url,
-        userAddedBy: author,
-      }))
-  )
+  youtubesearchapi.GetListByKeyword(userInput, false, 1).then((videoId: YtdlResults) => {
+    if (videoId.items[0] !== undefined) {
+      return ytdl
+        .getInfo(
+          userInput.includes('https')
+            ? userInput
+            : 'https://www.youtube.com/watch?v=' + videoId.items[0].id
+        )
+        .then((videoInfo: ytdl.videoInfo) => ({
+          title: videoInfo.videoDetails.title,
+          url: videoInfo.videoDetails.video_url,
+          userAddedBy: author,
+        }))
+    }
+    return {
+      title: 'error, rickrolling you',
+      url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+      userAddedBy: author,
+    }
+  })

@@ -7,7 +7,7 @@ import { god } from './commands/god'
 import { help } from './commands/help'
 import { listQueue } from './commands/listQueue'
 import { play } from './commands/play'
-import { playUrl } from './commands/playUrl'
+import { playUrl } from './commands/playPredefinedSound'
 import { reset } from './commands/reset'
 import { skip } from './commands/skip'
 import { stop } from './commands/stop'
@@ -28,6 +28,9 @@ export const routeMessage = async (message: Discord.Message) => {
   const serverInfo: ServerInfo | undefined = getServerInfoFromMessage(message)
 
   if (message.content.startsWith(`${PREFIX}play`)) {
+    if (message.content === `${PREFIX}play`) {
+      return
+    }
     await play({ message, serverInfo })
     return
   }
@@ -47,6 +50,13 @@ export const routeMessage = async (message: Discord.Message) => {
     message.content.startsWith(`${PREFIX}assert`) ||
     message.content.startsWith(`${PREFIX}ad`)
   ) {
+    if (
+      message.content === `${PREFIX}ad` ||
+      message.content === `${PREFIX}assert` ||
+      message.content === `${PREFIX}assertdominance`
+    ) {
+      return
+    }
     assertDominance({ message, serverInfo })
     return
   }
